@@ -29,9 +29,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${cormorant.variable} ${outfit.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${outfit.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground selection:bg-accent selection:text-background">
+      <body className="min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-background">
         <div className="grain-overlay" />
         <SmoothScroll>{children}</SmoothScroll>
       </body>
