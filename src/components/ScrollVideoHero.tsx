@@ -83,6 +83,8 @@ export default function ScrollVideoHero() {
 
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [activeHoverCard, setActiveHoverCard] = useState<number | null>(null);
+  const [transitionPath, setTransitionPath] = useState<string>("");
+  const [startPos, setStartPos] = useState({ startLeft: 0, startRight: 0 });
   const isTransitioningRef = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
@@ -91,7 +93,6 @@ export default function ScrollVideoHero() {
   const scrollPathRef = useRef<SVGPathElement>(null);
   const scrollProgress = useRef({ current: 0, target: 0 });
   const transitionStartPos = useRef({ startLeft: 0, startRight: 0 });
-  const [startPos, setStartPos] = useState({ startLeft: 0, startRight: 0 });
 
   // Preload all frames on mount
   useEffect(() => {
@@ -491,6 +492,10 @@ export default function ScrollVideoHero() {
     setActiveCard(index);
     transitionProgress.current = { x: 0, bulge: 0 };
 
+    gsap.set(document.documentElement, {
+      "--transition-image-opacity": 1,
+    });
+
     const tl = gsap.timeline({
       onUpdate: () => {
         const { x, bulge } = transitionProgress.current;
@@ -536,6 +541,19 @@ export default function ScrollVideoHero() {
       },
       onComplete: () => {
         isTransitioningRef.current = false;
+        // Sync final full-screen path to React state so it survives any re-render
+        const finalPath = getPath(
+          transitionIndex,
+          1,
+          1,
+          0,
+          W,
+          H,
+          transitionStartPos.current.startLeft,
+          transitionStartPos.current.startRight,
+        );
+        setTransitionPath(finalPath);
+
         gsap.to(".service-detail-content", {
           opacity: 1,
           duration: 0.5,
@@ -543,6 +561,28 @@ export default function ScrollVideoHero() {
         });
       },
     });
+
+    // Fade the expanding transition image to 0 opacity
+    tl.to(
+      document.documentElement,
+      {
+        "--transition-image-opacity": 0,
+        duration: 1.0,
+        ease: "power1.inOut",
+      },
+      0,
+    );
+
+    // Fade the clicked card's background image to 0 opacity via HTML-level CSS variable
+    tl.to(
+      document.documentElement,
+      {
+        [`--card-image-opacity-${index}`]: 0,
+        duration: 0.6,
+        ease: "power1.inOut",
+      },
+      0,
+    );
 
     tl.to(
       transitionProgress.current,
@@ -599,6 +639,7 @@ export default function ScrollVideoHero() {
     const H = window.innerHeight;
     const isMobile = W < 768;
     const transitionIndex = isMobile ? 0 : activeCard;
+    const closingCardIndex = activeCard;
 
     gsap.to(".service-detail-content", {
       opacity: 0,
@@ -651,7 +692,12 @@ export default function ScrollVideoHero() {
             }
           },
           onComplete: () => {
+            // Reset CSS variables on html element when done
+            gsap.set(document.documentElement, {
+              clearProps: `--card-image-opacity-${closingCardIndex},--transition-image-opacity`
+            });
             setActiveCard(null);
+            setTransitionPath("");
             isTransitioningRef.current = false;
             if (overlayRef.current) {
               overlayRef.current.classList.add("hidden");
@@ -666,6 +712,28 @@ export default function ScrollVideoHero() {
             }
           },
         });
+
+        // Fade CSS variable back to 1
+        tl.to(
+          document.documentElement,
+          {
+            [`--card-image-opacity-${closingCardIndex}`]: 1,
+            duration: 0.8,
+            ease: "power1.inOut",
+          },
+          0.4,
+        );
+
+        // Fade transition image opacity back to 1
+        tl.to(
+          document.documentElement,
+          {
+            "--transition-image-opacity": 1,
+            duration: 1.0,
+            ease: "power1.inOut",
+          },
+          0.1,
+        );
 
         tl.to(
           transitionProgress.current,
@@ -1000,7 +1068,7 @@ export default function ScrollVideoHero() {
             >
             {/* Background Zoom Image */}
             <div
-              className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] scale-100 group-hover:scale-105"
+              className={`card-bg-image card-bg-image-${index} absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] scale-100 group-hover:scale-105`}
               style={{ backgroundImage: `url('${service.image}')` }}
             />
             {/* Vignette Overlay */}
@@ -1044,88 +1112,40 @@ export default function ScrollVideoHero() {
         <svg className="absolute inset-0 w-full h-full pointer-events-none">
           <defs>
             <clipPath id="card-clip">
-              <path ref={pathRef} />
+              <path ref={pathRef} d={transitionPath} />
             </clipPath>
           </defs>
           {activeCard !== null && (
-            <image
-              ref={imageRef}
-              href={SERVICES_DATA[activeCard].image}
-              x={startPos.startLeft - 260}
-              width={(startPos.startRight - startPos.startLeft) + 520}
-              height="100%"
-              preserveAspectRatio="xMidYMid slice"
-              clipPath="url(#card-clip)"
-            />
+            <>
+              {/* Solid Black Background behind the transition image */}
+              <rect
+                width="100%"
+                height="100%"
+                fill="#030303"
+                clipPath="url(#card-clip)"
+              />
+              {/* Expanding image that fades to opacity 0 */}
+              <image
+                ref={imageRef}
+                href={SERVICES_DATA[activeCard].image}
+                x={startPos.startLeft - 260}
+                width={(startPos.startRight - startPos.startLeft) + 520}
+                height="100%"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath="url(#card-clip)"
+                style={{
+                  opacity: `var(--transition-image-opacity, 1)`,
+                }}
+              />
+            </>
           )}
         </svg>
 
         {activeCard !== null && (
-          <div className="service-detail-content absolute inset-0 z-10 opacity-0 flex flex-col justify-between p-8 md:p-24 select-text">
-            {/* Header: Title and Back button */}
-            <div className="flex justify-between items-center w-full">
-              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-[#eae6e1]/50 uppercase">
-                JJ Films // Service Details
-              </span>
-              <button
-                onClick={handleCloseDetail}
-                className="font-body text-[10px] md:text-xs tracking-[0.2em] text-[#eae6e1] hover:text-accent uppercase cursor-pointer border border-[#eae6e1]/20 rounded-full px-5 py-2 transition-colors duration-300 backdrop-blur-xs"
-              >
-                Back to Reel
-              </button>
-            </div>
-
-            {/* Main content grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-center my-auto">
-              <div className="text-left">
-                <span className="font-mono text-[10px] md:text-xs tracking-[0.4em] text-accent uppercase">
-                  Division 0{activeCard + 1}
-                </span>
-                <h2 className="font-display text-4xl md:text-7xl font-light tracking-wide text-[#eae6e1] mt-4">
-                  {SERVICES_DATA[activeCard].title}
-                </h2>
-                <p className="font-body text-xs md:text-base text-[#eae6e1]/80 leading-relaxed mt-6 max-w-xl">
-                  {SERVICES_DATA[activeCard].longDescription}
-                </p>
-                <div className="flex gap-4 mt-8 md:mt-10">
-                  <button className="bg-accent hover:bg-accent-light text-background font-body text-[10px] md:text-xs font-semibold uppercase tracking-[0.25em] px-6 md:px-8 py-3.5 md:py-4 rounded-xs transition-all duration-300 cursor-pointer">
-                    Book Project
-                  </button>
-                  <button className="border border-accent/30 hover:border-accent text-accent font-body text-[10px] md:text-xs font-semibold uppercase tracking-[0.25em] px-6 md:px-8 py-3.5 md:py-4 rounded-xs transition-all duration-300 cursor-pointer">
-                    Watch Showreel
-                  </button>
-                </div>
-              </div>
-
-              {/* Cinematic Mockup Window */}
-              <div className="relative aspect-video w-full bg-black/40 border border-accent/20 rounded-sm overflow-hidden group">
-                <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out scale-100 group-hover:scale-105"
-                  style={{
-                    backgroundImage: `url('${SERVICES_DATA[activeCard].image}')`,
-                  }}
-                />
-                <div className="absolute inset-0 bg-black/35 z-10 flex items-center justify-center">
-                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#eae6e1]/10 border border-[#eae6e1]/20 backdrop-blur-xs flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer">
-                    <svg
-                      className="w-5 h-5 md:w-6 md:h-6 fill-[#eae6e1] translate-x-[2px]"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Footer Specifications */}
-            <div className="flex flex-col md:flex-row justify-between border-t border-[#eae6e1]/10 pt-6 md:pt-8 w-full font-mono text-[8px] md:text-[9px] text-[#eae6e1]/40 tracking-[0.25em]">
-              <div>SPECIFICATIONS // 4K RAW ANAMORPHIC</div>
-              <div className="mt-2 md:mt-0">
-                STYLING // VOLUMETRIC DIRECTION // RAW EDIT
-              </div>
-            </div>
-          </div>
+          <div
+            onClick={handleCloseDetail}
+            className="service-detail-content absolute inset-0 z-10 opacity-0 cursor-pointer"
+          />
         )}
       </div>
 
@@ -1232,6 +1252,15 @@ export default function ScrollVideoHero() {
           100% {
             transform: scaleY(1);
           }
+        }
+        .card-bg-image-0 {
+          opacity: var(--card-image-opacity-0, 1);
+        }
+        .card-bg-image-1 {
+          opacity: var(--card-image-opacity-1, 1);
+        }
+        .card-bg-image-2 {
+          opacity: var(--card-image-opacity-2, 1);
         }
         @media (min-width: 768px) {
           .services-card {
