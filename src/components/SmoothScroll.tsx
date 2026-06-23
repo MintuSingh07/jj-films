@@ -20,6 +20,8 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       wheelMultiplier: 1.0,
     });
 
+    (window as unknown as { lenis: Lenis }).lenis = lenis;
+
     lenis.on("scroll", ScrollTrigger.update);
 
     const updateTicker = (time: number) => {

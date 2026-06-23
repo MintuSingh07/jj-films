@@ -7,6 +7,66 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 const TOTAL_FRAMES = 240;
 const HISTOGRAM_HEIGHTS = [30, 55, 45, 75, 40, 65, 50, 85, 35, 60, 25, 70];
 
+const SERVICES_DATA = [
+  {
+    title: "Real Estate",
+    tag: "Photography",
+    shortDescription:
+      "Architectural spaces, elevated.\nEvery property at its absolute best.",
+    longDescription:
+      "We capture architectural masterpieces and luxury estates with pristine clarity, using volumetric lighting, advanced stabilization, and high-dynamic-range imaging to showcase every layout, texture, and detail in its absolute best light.",
+    image: "/images/real_estate.png",
+  },
+  {
+    title: "Commercial Films",
+    tag: "Commercials & Ads",
+    shortDescription:
+      "Volumetric shadows, rich details.\nTelling your brand's unique story.",
+    longDescription:
+      "Premium brand narratives engineered for the screen. From high-impact commercials to documentary-style brand stories, we direct cinematic campaigns that capture volumetric shadows, rich textures, and evoke deep emotional connections.",
+    image: "/images/commercial_films.png",
+  },
+  {
+    title: "Wedding Films",
+    tag: "Events & Films",
+    shortDescription:
+      "Every stolen glance, every joyful\ntear — yours forever.",
+    longDescription:
+      "High-fidelity cinematic keepsakes. We document luxury weddings and boutique events with an intimate, candid approach. Every stolen glance, whispered vow, and joyful tear is preserved forever on pristine 4K formats.",
+    image: "/images/wedding_films.png",
+  },
+];
+
+const getPath = (
+  index: number,
+  p: number, // normalized progress 0 to 1
+  bulgeVal: number,
+  W: number,
+  H: number,
+  startLeft: number,
+  startRight: number,
+) => {
+  const sideVal = bulgeVal * 0.7;
+  if (index === 0) {
+    // Left card boundary starts at startRight, moves to W
+    const x_curr = startRight + p * (W - startRight);
+    return `M 0 0 L ${x_curr} 0 C ${x_curr - sideVal} ${H * 0.25}, ${x_curr + bulgeVal} ${H * 0.25}, ${x_curr + bulgeVal} ${H * 0.5} C ${x_curr + bulgeVal} ${H * 0.75}, ${x_curr - sideVal} ${H * 0.75}, ${x_curr} ${H} L 0 ${H} Z`;
+  } else if (index === 1) {
+    // Middle card expanding both ways
+    const x_left = startLeft - p * startLeft;
+    const x_right = startRight + p * (W - startRight);
+    
+    const leftPath = `M ${x_left} 0 C ${x_left + sideVal} ${H * 0.25}, ${x_left - bulgeVal} ${H * 0.25}, ${x_left - bulgeVal} ${H * 0.5} C ${x_left - bulgeVal} ${H * 0.75}, ${x_left + sideVal} ${H * 0.75}, ${x_left} ${H}`;
+    const rightPath = `L ${x_right} ${H} C ${x_right - sideVal} ${H * 0.75}, ${x_right + bulgeVal} ${H * 0.75}, ${x_right + bulgeVal} ${H * 0.5} C ${x_right + bulgeVal} ${H * 0.25}, ${x_right - sideVal} ${H * 0.25}, ${x_right} 0 Z`;
+    
+    return `${leftPath} ${rightPath}`;
+  } else {
+    // Right card expanding left, starts at startLeft, moves to 0
+    const x_curr = startLeft - p * startLeft;
+    return `M ${x_curr} 0 C ${x_curr + sideVal} ${H * 0.25}, ${x_curr - bulgeVal} ${H * 0.25}, ${x_curr - bulgeVal} ${H * 0.5} C ${x_curr - bulgeVal} ${H * 0.75}, ${x_curr + sideVal} ${H * 0.75}, ${x_curr} ${H} L ${W} ${H} L ${W} 0 Z`;
+  }
+};
+
 export default function ScrollVideoHero() {
   const triggerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -16,6 +76,17 @@ export default function ScrollVideoHero() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [loadError, setLoadError] = useState(false);
+
+  const [activeCard, setActiveCard] = useState<number | null>(null);
+  const [activeHoverCard, setActiveHoverCard] = useState<number | null>(null);
+  const isTransitioningRef = useRef(false);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const imageRef = useRef<SVGImageElement>(null);
+  const transitionProgress = useRef({ x: 0, bulge: 0 });
+  const scrollPathRef = useRef<SVGPathElement>(null);
+  const scrollProgress = useRef({ current: 0, target: 0 });
+  const transitionStartPos = useRef({ startLeft: 0, startRight: 0 });
 
   // Preload all frames on mount
   useEffect(() => {
@@ -78,23 +149,20 @@ export default function ScrollVideoHero() {
       .to(".loader-content", {
         opacity: 0,
         duration: 0.2,
-        ease: "power2.out",
+        ease: "power4.out",
       })
       // 2. Staggered lifting of the vertical curtain strips starts immediately after text vanish completes
-      .to(
-        ".loader-strip",
-        {
-          yPercent: -100,
-          duration: 0.8,
-          stagger: 0.05,
-          ease: "power3.inOut",
-        }
-      )
+      .to(".loader-strip", {
+        yPercent: -100,
+        duration: 0.8,
+        stagger: 0.05,
+        ease: "power4.inOut",
+      })
       // 3. Smooth reveal / lens zoom-out transition of the background canvas (increased intensity)
       .fromTo(
         canvas,
         { scale: 1.3, opacity: 0.5 },
-        { scale: 1, opacity: 1, duration: 1.4, ease: "power2.out" },
+        { scale: 1, opacity: 1, duration: 1.4, ease: "power4.out" },
         "-=0.7", // starts shortly after curtain strips start lifting
       );
 
@@ -159,8 +227,7 @@ export default function ScrollVideoHero() {
 
     // Set initial states for services elements
     gsap.set(".services-overlay", { opacity: 0, pointerEvents: "none" });
-    gsap.set(".services-left", { xPercent: -100 });
-    gsap.set(".services-right", { xPercent: 100 });
+    gsap.set(".services-card", { yPercent: 100, scale: 0.95, opacity: 0 });
     gsap.set(".services-border", { scale: 0.96, opacity: 0 });
     gsap.set(".services-content", { y: 30, opacity: 0 });
     gsap.set(".services-num", { scale: 0.8, opacity: 0 });
@@ -176,7 +243,7 @@ export default function ScrollVideoHero() {
           scale: 2.2,
           opacity: 0,
           duration: 1.0,
-          ease: "power1.inOut",
+          ease: "power4.inOut",
         },
         0,
       )
@@ -185,26 +252,20 @@ export default function ScrollVideoHero() {
         ".services-overlay",
         {
           opacity: 1,
-          pointerEvents: "auto",
           duration: 0.1,
         },
         0.2,
       )
+      // Staggered slide up of the 3 cards from the bottom with ultra-smooth power4.out ease
       .to(
-        ".services-left",
+        ".services-card",
         {
-          xPercent: 0,
-          duration: 1.2,
-          ease: "power3.out",
-        },
-        0.2,
-      )
-      .to(
-        ".services-right",
-        {
-          xPercent: 0,
-          duration: 1.2,
-          ease: "power3.out",
+          yPercent: 0,
+          scale: 1,
+          opacity: 1,
+          duration: 1.6,
+          stagger: 0.12,
+          ease: "power4.out",
         },
         0.2,
       )
@@ -214,9 +275,9 @@ export default function ScrollVideoHero() {
           scale: 1,
           opacity: 1,
           duration: 0.8,
-          ease: "power2.out",
+          ease: "power4.out",
         },
-        0.5,
+        0.6,
       )
       .to(
         ".services-num",
@@ -224,10 +285,10 @@ export default function ScrollVideoHero() {
           scale: 1,
           opacity: 1,
           duration: 0.8,
-          ease: "back.out(1.7)",
+          ease: "power4.out",
           stagger: 0.1,
         },
-        0.6,
+        0.8,
       )
       .to(
         ".services-content",
@@ -235,10 +296,10 @@ export default function ScrollVideoHero() {
           y: 0,
           opacity: 1,
           duration: 0.8,
-          ease: "power2.out",
+          ease: "power4.out",
           stagger: 0.1,
         },
-        0.7,
+        0.9,
       )
       .to(
         ".services-footer",
@@ -246,9 +307,18 @@ export default function ScrollVideoHero() {
           y: 0,
           opacity: 1,
           duration: 0.6,
-          ease: "power2.out",
+          ease: "power4.out",
         },
-        1.0,
+        1.2,
+      )
+      // Enable pointer events / hover selection only after a delay of 2.5 seconds (a few seconds after scrolling to the section)
+      .to(
+        ".services-overlay",
+        {
+          pointerEvents: "auto",
+          duration: 0.1,
+        },
+        2.5,
       );
 
     // Timeline to animate the virtual frame playhead index and overlays on scroll
@@ -267,6 +337,8 @@ export default function ScrollVideoHero() {
           } else {
             cardsTimeline.reverse();
           }
+          // Set scroll warp target from velocity
+          scrollProgress.current.target = self.getVelocity();
         },
         onLeave: () => {
           gsap.set(canvas, { display: "none" });
@@ -302,7 +374,7 @@ export default function ScrollVideoHero() {
         opacity: 0,
         y: 20,
         duration: 1.5,
-        ease: "power2.out",
+        ease: "power4.out",
       },
       0.2,
     );
@@ -311,12 +383,12 @@ export default function ScrollVideoHero() {
     tl.fromTo(
       ".text-block-1",
       { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 2, ease: "power2.out" },
+      { opacity: 1, y: 0, duration: 2, ease: "power4.out" },
       1.5,
     );
     tl.to(
       ".text-block-1",
-      { opacity: 0, y: -40, duration: 1.5, ease: "power2.in" },
+      { opacity: 0, y: -40, duration: 1.5, ease: "power4.in" },
       4.5,
     );
 
@@ -324,12 +396,12 @@ export default function ScrollVideoHero() {
     tl.fromTo(
       ".text-block-2",
       { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 2, ease: "power2.out" },
+      { opacity: 1, y: 0, duration: 2, ease: "power4.out" },
       5.5,
     );
     tl.to(
       ".text-block-2",
-      { opacity: 0, y: -40, duration: 1.5, ease: "power2.in" },
+      { opacity: 0, y: -40, duration: 1.5, ease: "power4.in" },
       8.5,
     );
 
@@ -337,14 +409,33 @@ export default function ScrollVideoHero() {
     tl.fromTo(
       ".text-block-3",
       { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 2, ease: "power2.out" },
+      { opacity: 1, y: 0, duration: 2, ease: "power4.out" },
       9.5,
     );
     tl.to(
       ".text-block-3",
-      { opacity: 0, y: -40, duration: 1.5, ease: "power2.in" },
+      { opacity: 0, y: -40, duration: 1.5, ease: "power4.in" },
       10.2, // Fades out exactly when video finishes scrubbing
     );
+
+    const updateScrollWarp = () => {
+      const target = scrollProgress.current.target * 0.15;
+      const maxWarp = 120;
+      const clampedTarget = Math.max(-maxWarp, Math.min(maxWarp, target));
+      scrollProgress.current.current += (clampedTarget - scrollProgress.current.current) * 0.1;
+      scrollProgress.current.target *= 0.85;
+
+      if (scrollPathRef.current) {
+        const W = window.innerWidth;
+        const H = window.innerHeight;
+        const warp = scrollProgress.current.current;
+        // Wobbly top and bottom borders (edge to edge smooth curve)
+        const d = `M 0 0 Q ${W * 0.5} ${warp} ${W} 0 L ${W} ${H} Q ${W * 0.5} ${H + warp} 0 ${H} Z`;
+        scrollPathRef.current.setAttribute("d", d);
+      }
+    };
+
+    gsap.ticker.add(updateScrollWarp);
 
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -352,17 +443,270 @@ export default function ScrollVideoHero() {
       tl.kill();
       cardsTimeline.kill();
       loaderExitTl.kill();
+      gsap.ticker.remove(updateScrollWarp);
     };
   }, [isLoaded]);
 
   // Percentage value for loading indicator
   const loadPercentage = Math.round((loadedCount / TOTAL_FRAMES) * 100);
 
+  const handleCardClick = (index: number, element: HTMLDivElement) => {
+    if (isTransitioningRef.current || activeCard !== null) return;
+    isTransitioningRef.current = true;
+
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    const isMobile = W < 768;
+    const transitionIndex = isMobile ? 0 : index;
+
+    if (isMobile) {
+      transitionStartPos.current = {
+        startLeft: 0,
+        startRight: 0,
+      };
+    } else {
+      const rect = element.getBoundingClientRect();
+      transitionStartPos.current = {
+        startLeft: rect.left,
+        startRight: rect.right,
+      };
+    }
+
+    if (overlayRef.current) {
+      overlayRef.current.classList.remove("hidden");
+      overlayRef.current.classList.add("pointer-events-auto");
+      overlayRef.current.classList.remove("pointer-events-none");
+    }
+
+    const globalWindow = window as unknown as {
+      lenis?: { stop: () => void; start: () => void };
+    };
+    if (globalWindow.lenis) {
+      globalWindow.lenis.stop();
+    }
+
+    setActiveCard(index);
+    transitionProgress.current = { x: 0, bulge: 0 };
+
+    const tl = gsap.timeline({
+      onUpdate: () => {
+        const { x, bulge } = transitionProgress.current;
+        if (pathRef.current) {
+          const dPath = getPath(
+            transitionIndex,
+            x,
+            bulge,
+            W,
+            H,
+            transitionStartPos.current.startLeft,
+            transitionStartPos.current.startRight,
+          );
+          pathRef.current.setAttribute("d", dPath);
+        }
+        if (imageRef.current) {
+          const startL = transitionStartPos.current.startLeft;
+          const startR = transitionStartPos.current.startRight;
+          
+          let imgX = 0;
+          let imgW = W;
+          const buffer = 200;
+          
+          if (transitionIndex === 0) {
+            const x_curr = startR + x * (W - startR);
+            imgX = 0;
+            imgW = Math.min(W, x_curr + buffer);
+          } else if (transitionIndex === 2) {
+            const x_curr = startL * (1 - x);
+            imgX = Math.max(0, x_curr - buffer);
+            imgW = W - imgX;
+          } else {
+            const x_left = startL * (1 - x);
+            const x_right = startR + x * (W - startR);
+            imgX = Math.max(0, x_left - buffer);
+            imgW = Math.min(W, x_right + buffer) - imgX;
+          }
+          
+          imageRef.current.setAttribute("x", imgX.toString());
+          imageRef.current.setAttribute("width", imgW.toString());
+        }
+      },
+      onComplete: () => {
+        isTransitioningRef.current = false;
+        gsap.to(".service-detail-content", {
+          opacity: 1,
+          duration: 0.5,
+          ease: "power4.out",
+        });
+      },
+    });
+
+    tl.to(
+      transitionProgress.current,
+      {
+        x: 1,
+        duration: 1.2,
+        ease: "power4.inOut",
+      },
+      0,
+    );
+    tl.to(
+      transitionProgress.current,
+      {
+        bulge: 160,
+        duration: 0.5,
+        ease: "power3.out",
+      },
+      0,
+    );
+    tl.to(
+      transitionProgress.current,
+      {
+        bulge: -30,
+        duration: 0.5,
+        ease: "power2.inOut",
+      },
+      0.5,
+    );
+    tl.to(
+      transitionProgress.current,
+      {
+        bulge: 0,
+        duration: 0.2,
+        ease: "power2.out",
+      },
+      1.0,
+    );
+  };
+
+  const handleCloseDetail = () => {
+    if (isTransitioningRef.current || activeCard === null) return;
+    isTransitioningRef.current = true;
+
+    const W = window.innerWidth;
+    const H = window.innerHeight;
+    const isMobile = W < 768;
+    const transitionIndex = isMobile ? 0 : activeCard;
+
+    gsap.to(".service-detail-content", {
+      opacity: 0,
+      duration: 0.3,
+      ease: "power4.out",
+      onComplete: () => {
+        transitionProgress.current = { x: 1, bulge: 0 };
+
+        const tl = gsap.timeline({
+          onUpdate: () => {
+            const { x, bulge } = transitionProgress.current;
+            if (pathRef.current) {
+              const dPath = getPath(
+                transitionIndex,
+                x,
+                bulge,
+                W,
+                H,
+                transitionStartPos.current.startLeft,
+                transitionStartPos.current.startRight,
+              );
+              pathRef.current.setAttribute("d", dPath);
+            }
+            if (imageRef.current) {
+              const startL = transitionStartPos.current.startLeft;
+              const startR = transitionStartPos.current.startRight;
+              
+              let imgX = 0;
+              let imgW = W;
+              const buffer = 200;
+              
+              if (transitionIndex === 0) {
+                const x_curr = startR + x * (W - startR);
+                imgX = 0;
+                imgW = Math.min(W, x_curr + buffer);
+              } else if (transitionIndex === 2) {
+                const x_curr = startL * (1 - x);
+                imgX = Math.max(0, x_curr - buffer);
+                imgW = W - imgX;
+              } else {
+                const x_left = startL * (1 - x);
+                const x_right = startR + x * (W - startR);
+                imgX = Math.max(0, x_left - buffer);
+                imgW = Math.min(W, x_right + buffer) - imgX;
+              }
+              
+              imageRef.current.setAttribute("x", imgX.toString());
+              imageRef.current.setAttribute("width", imgW.toString());
+            }
+          },
+          onComplete: () => {
+            setActiveCard(null);
+            isTransitioningRef.current = false;
+            if (overlayRef.current) {
+              overlayRef.current.classList.add("hidden");
+              overlayRef.current.classList.add("pointer-events-none");
+              overlayRef.current.classList.remove("pointer-events-auto");
+            }
+            const globalWindow = window as unknown as {
+              lenis?: { stop: () => void; start: () => void };
+            };
+            if (globalWindow.lenis) {
+              globalWindow.lenis.start();
+            }
+          },
+        });
+
+        tl.to(
+          transitionProgress.current,
+          {
+            x: 0,
+            duration: 1.2,
+            ease: "power4.inOut",
+          },
+          0,
+        );
+        tl.to(
+          transitionProgress.current,
+          {
+            bulge: 180, // stretch value peaks
+            duration: 0.5,
+            ease: "power3.out",
+          },
+          0,
+        );
+        tl.to(
+          transitionProgress.current,
+          {
+            bulge: -35,
+            duration: 0.5,
+            ease: "power2.inOut",
+          },
+          0.5,
+        );
+        tl.to(
+          transitionProgress.current,
+          {
+            bulge: 0, // stretch value returns to 0
+            duration: 0.2,
+            ease: "power2.out",
+          },
+          1.0,
+        );
+      },
+    });
+  };
+
   return (
     <div
       ref={triggerRef}
       className="relative w-screen h-screen bg-background overflow-hidden"
     >
+      {/* Global Scroll Clip Path SVG */}
+      <svg className="absolute inset-0 w-0 h-0 pointer-events-none">
+        <defs>
+          <clipPath id="scroll-clip">
+            <path ref={scrollPathRef} />
+          </clipPath>
+        </defs>
+      </svg>
+
       {/* Loading Screen Overlay */}
       {showLoader && !loadError && (
         <div className="loader-overlay absolute inset-0 z-50 overflow-hidden bg-transparent pointer-events-none">
@@ -579,16 +923,19 @@ export default function ScrollVideoHero() {
 
       {/* Floating Scroll Guide */}
       <div className="scroll-guide absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-3.5 font-body text-[10px] tracking-[0.3em] text-[#7c7c82] select-none text-center">
-        <span className="uppercase text-[9px] text-[#eae6e1]/60 tracking-[0.35em] transition-colors duration-500 hover:text-accent">
+        <span className="uppercase text-[9px] text-[#eae6e1]/60 tracking-[0.35em] transition-colors duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:text-accent">
           SCROLL TO REVEAL MAGIC
         </span>
-        <div className="w-[20px] h-[32px] border border-[#7c7c82]/40 rounded-[10px] flex justify-center p-1.5 opacity-80 hover:opacity-100 transition-opacity duration-300">
+        <div className="w-[20px] h-[32px] border border-[#7c7c82]/40 rounded-[10px] flex justify-center p-1.5 opacity-80 hover:opacity-100 transition-opacity duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
           <div className="w-[3px] h-[6px] bg-[#facc15] rounded-full mouse-wheel" />
         </div>
       </div>
 
       {/* Services Split-Screen Panels (revealed at the end of the scroll) */}
-      <div className="services-overlay absolute inset-0 z-30 opacity-0 pointer-events-none flex flex-col md:flex-row">
+      <div
+        className="services-overlay absolute inset-0 z-30 opacity-0 pointer-events-none flex flex-col md:flex-row"
+        style={{ clipPath: "url(#scroll-clip)" }}
+      >
         {/* Thin Gold Viewport Border Overlay */}
         <div className="services-border absolute inset-4 md:inset-6 border border-accent/25 pointer-events-none z-30" />
 
@@ -597,67 +944,65 @@ export default function ScrollVideoHero() {
           <span className="w-1.5 h-1.5 rounded-full bg-foreground/50 animate-pulse" />
         </div>
 
-        {/* Left Panel: Real Estate */}
-        <div className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden flex items-end justify-start p-8 md:p-20 group border-b md:border-b-0 md:border-r border-accent/10 services-left">
-          {/* Background Zoom Image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out scale-100 group-hover:scale-105"
-            style={{ backgroundImage: "url('/images/real_estate.png')" }}
-          />
-          {/* Vignette Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-black/40 z-10" />
+        {SERVICES_DATA.map((service, index) => {
+          const isHovered = activeHoverCard === index;
+          const hasActiveHover = activeHoverCard !== null;
+          
+          let cardFlex = "1";
+          let cardOpacity = "1";
+          
+          if (hasActiveHover) {
+            cardFlex = isHovered ? "1.6" : "0.7";
+            cardOpacity = isHovered ? "1" : "0.55";
+          }
 
-          {/* Section Large Number */}
-          <div className="services-num absolute top-10 left-10 z-10 font-display text-7xl md:text-9xl text-foreground/5 font-extrabold select-none">
-            01
+          return (
+            <div
+              key={index}
+              onClick={(e) => handleCardClick(index, e.currentTarget)}
+              onMouseEnter={() => {
+                if (activeCard === null) {
+                  setActiveHoverCard(index);
+                }
+              }}
+              style={{
+                "--card-flex": cardFlex,
+                "--card-opacity": cardOpacity,
+              } as React.CSSProperties}
+              className={`services-card relative overflow-hidden flex items-end justify-start p-8 md:p-14 group cursor-pointer ${
+                index < 2
+                  ? "border-b md:border-b-0 md:border-r border-accent/10"
+                  : ""
+              }`}
+            >
+            {/* Background Zoom Image */}
+            <div
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] scale-100 group-hover:scale-105"
+              style={{ backgroundImage: `url('${service.image}')` }}
+            />
+            {/* Vignette Overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/20 z-10" />
+
+            {/* Section Large Number */}
+            <div className="services-num absolute top-10 left-10 z-10 font-display text-6xl md:text-8xl text-foreground/5 font-extrabold select-none">
+              0{index + 1}
+            </div>
+
+            {/* Text Details */}
+            <div className="services-content relative z-20 text-left max-w-sm">
+              <span className="font-body text-[9px] md:text-[10px] tracking-[0.45em] text-foreground/50 uppercase">
+                {service.tag}
+              </span>
+              <h3 className="font-display text-3xl md:text-5xl text-foreground mt-2 font-light tracking-wide">
+                {service.title}
+              </h3>
+              <p className="font-display italic text-[#7c7c82] mt-4 text-xs md:text-sm leading-relaxed max-w-xs whitespace-pre-line">
+                {service.shortDescription}
+              </p>
+            </div>
           </div>
-
-          {/* Text Details */}
-          <div className="services-content relative z-20 text-left max-w-lg">
-            <span className="font-body text-[9px] md:text-[10px] tracking-[0.45em] text-foreground/50 uppercase">
-              Photography
-            </span>
-            <h3 className="font-display text-3xl md:text-6xl text-foreground mt-2 font-light tracking-wide">
-              Real Estate
-            </h3>
-            <p className="font-display italic text-[#7c7c82] mt-4 text-xs md:text-sm leading-relaxed max-w-sm">
-              Architectural spaces, elevated.
-              <br />
-              Every property at its absolute best.
-            </p>
-          </div>
-        </div>
-
-        {/* Right Panel: Wedding Films */}
-        <div className="relative w-full md:w-1/2 h-1/2 md:h-full overflow-hidden flex items-end justify-end p-8 md:p-20 group services-right">
-          {/* Background Zoom Image */}
-          <div
-            className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out scale-100 group-hover:scale-105"
-            style={{ backgroundImage: "url('/images/wedding_films.png')" }}
-          />
-          {/* Vignette Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-black/35 z-10" />
-
-          {/* Section Large Number */}
-          <div className="services-num absolute top-10 right-10 z-10 font-display text-7xl md:text-9xl text-foreground/5 font-extrabold select-none">
-            02
-          </div>
-
-          {/* Text Details */}
-          <div className="services-content relative z-20 text-right max-w-lg">
-            <span className="font-body text-[9px] md:text-[10px] tracking-[0.45em] text-foreground/50 uppercase">
-              Events & Films
-            </span>
-            <h3 className="font-display text-3xl md:text-6xl text-foreground mt-2 font-light tracking-wide">
-              Wedding Films
-            </h3>
-            <p className="font-display italic text-[#7c7c82] mt-4 text-xs md:text-sm leading-relaxed max-w-sm ml-auto">
-              Every stolen glance, every joyful
-              <br />
-              tear — yours forever.
-            </p>
-          </div>
-        </div>
+          );
+        })}
 
         {/* Bottom Footer Info */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-30 flex flex-col items-center gap-3 font-body text-[8px] md:text-[9px] tracking-[0.3em] text-[#7c7c82] select-none text-center services-footer">
@@ -666,6 +1011,99 @@ export default function ScrollVideoHero() {
             <div className="absolute left-0 top-0 h-full bg-accent w-1/3 animate-scroll-indicator" />
           </div>
         </div>
+      </div>
+
+      {/* Curved Transition Panel & Fullscreen Service Details Overlay */}
+      <div
+        ref={overlayRef}
+        className="fixed inset-0 z-50 pointer-events-none hidden bg-transparent"
+      >
+        <svg className="absolute inset-0 w-full h-full pointer-events-none">
+          <defs>
+            <clipPath id="card-clip">
+              <path ref={pathRef} />
+            </clipPath>
+          </defs>
+          {activeCard !== null && (
+            <image
+              ref={imageRef}
+              href={SERVICES_DATA[activeCard].image}
+              x={transitionStartPos.current.startLeft}
+              width={transitionStartPos.current.startRight - transitionStartPos.current.startLeft}
+              height="100%"
+              preserveAspectRatio="xMidYMid slice"
+              clipPath="url(#card-clip)"
+            />
+          )}
+        </svg>
+
+        {activeCard !== null && (
+          <div className="service-detail-content absolute inset-0 z-10 opacity-0 flex flex-col justify-between p-8 md:p-24 select-text">
+            {/* Header: Title and Back button */}
+            <div className="flex justify-between items-center w-full">
+              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-[#eae6e1]/50 uppercase">
+                JJ Films // Service Details
+              </span>
+              <button
+                onClick={handleCloseDetail}
+                className="font-body text-[10px] md:text-xs tracking-[0.2em] text-[#eae6e1] hover:text-accent uppercase cursor-pointer border border-[#eae6e1]/20 rounded-full px-5 py-2 transition-colors duration-300 backdrop-blur-xs"
+              >
+                Back to Reel
+              </button>
+            </div>
+
+            {/* Main content grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-20 items-center my-auto">
+              <div className="text-left">
+                <span className="font-mono text-[10px] md:text-xs tracking-[0.4em] text-accent uppercase">
+                  Division 0{activeCard + 1}
+                </span>
+                <h2 className="font-display text-4xl md:text-7xl font-light tracking-wide text-[#eae6e1] mt-4">
+                  {SERVICES_DATA[activeCard].title}
+                </h2>
+                <p className="font-body text-xs md:text-base text-[#eae6e1]/80 leading-relaxed mt-6 max-w-xl">
+                  {SERVICES_DATA[activeCard].longDescription}
+                </p>
+                <div className="flex gap-4 mt-8 md:mt-10">
+                  <button className="bg-accent hover:bg-accent-light text-background font-body text-[10px] md:text-xs font-semibold uppercase tracking-[0.25em] px-6 md:px-8 py-3.5 md:py-4 rounded-xs transition-all duration-300 cursor-pointer">
+                    Book Project
+                  </button>
+                  <button className="border border-accent/30 hover:border-accent text-accent font-body text-[10px] md:text-xs font-semibold uppercase tracking-[0.25em] px-6 md:px-8 py-3.5 md:py-4 rounded-xs transition-all duration-300 cursor-pointer">
+                    Watch Showreel
+                  </button>
+                </div>
+              </div>
+
+              {/* Cinematic Mockup Window */}
+              <div className="relative aspect-video w-full bg-black/40 border border-accent/20 rounded-sm overflow-hidden group">
+                <div
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-out scale-100 group-hover:scale-105"
+                  style={{
+                    backgroundImage: `url('${SERVICES_DATA[activeCard].image}')`,
+                  }}
+                />
+                <div className="absolute inset-0 bg-black/35 z-10 flex items-center justify-center">
+                  <div className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-[#eae6e1]/10 border border-[#eae6e1]/20 backdrop-blur-xs flex items-center justify-center hover:scale-110 transition-transform duration-300 cursor-pointer">
+                    <svg
+                      className="w-5 h-5 md:w-6 md:h-6 fill-[#eae6e1] translate-x-[2px]"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Footer Specifications */}
+            <div className="flex flex-col md:flex-row justify-between border-t border-[#eae6e1]/10 pt-6 md:pt-8 w-full font-mono text-[8px] md:text-[9px] text-[#eae6e1]/40 tracking-[0.25em]">
+              <div>SPECIFICATIONS // 4K RAW ANAMORPHIC</div>
+              <div className="mt-2 md:mt-0">
+                STYLING // VOLUMETRIC DIRECTION // RAW EDIT
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <style jsx>{`
@@ -770,6 +1208,15 @@ export default function ScrollVideoHero() {
           }
           100% {
             transform: scaleY(1);
+          }
+        }
+        @media (min-width: 768px) {
+          .services-card {
+            flex: var(--card-flex, 1) !important;
+            opacity: var(--card-opacity, 1) !important;
+            transition:
+              flex 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1) !important;
           }
         }
       `}</style>
