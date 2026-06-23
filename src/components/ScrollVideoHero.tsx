@@ -39,7 +39,8 @@ const SERVICES_DATA = [
 
 const getPath = (
   index: number,
-  p: number, // normalized progress 0 to 1
+  pWidth: number, // physical layout progress (0 to 1)
+  pAnim: number,  // animation progress (0 to 1, always increases)
   bulgeVal: number,
   W: number,
   H: number,
@@ -47,23 +48,26 @@ const getPath = (
   startRight: number,
 ) => {
   const sideVal = bulgeVal * 0.7;
+  
+  // broad (0.25) when animation just starts, sharp/squished (0.08) near the end
+  const yOffset = 0.25 - 0.17 * pAnim;
+  const yTop = 0.5 - yOffset;
+  const yBottom = 0.5 + yOffset;
+  
   if (index === 0) {
-    // Left card boundary starts at startRight, moves to W
-    const x_curr = startRight + p * (W - startRight);
-    return `M 0 0 L ${x_curr} 0 C ${x_curr - sideVal} ${H * 0.25}, ${x_curr + bulgeVal} ${H * 0.25}, ${x_curr + bulgeVal} ${H * 0.5} C ${x_curr + bulgeVal} ${H * 0.75}, ${x_curr - sideVal} ${H * 0.75}, ${x_curr} ${H} L 0 ${H} Z`;
+    const x_curr = startRight + pWidth * (W - startRight);
+    return `M 0 0 L ${x_curr} 0 C ${x_curr - sideVal} ${H * yTop}, ${x_curr + bulgeVal} ${H * yTop}, ${x_curr + bulgeVal} ${H * 0.5} C ${x_curr + bulgeVal} ${H * yBottom}, ${x_curr - sideVal} ${H * yBottom}, ${x_curr} ${H} L 0 ${H} Z`;
   } else if (index === 1) {
-    // Middle card expanding both ways
-    const x_left = startLeft - p * startLeft;
-    const x_right = startRight + p * (W - startRight);
+    const x_left = startLeft - pWidth * startLeft;
+    const x_right = startRight + pWidth * (W - startRight);
     
-    const leftPath = `M ${x_left} 0 C ${x_left + sideVal} ${H * 0.25}, ${x_left - bulgeVal} ${H * 0.25}, ${x_left - bulgeVal} ${H * 0.5} C ${x_left - bulgeVal} ${H * 0.75}, ${x_left + sideVal} ${H * 0.75}, ${x_left} ${H}`;
-    const rightPath = `L ${x_right} ${H} C ${x_right - sideVal} ${H * 0.75}, ${x_right + bulgeVal} ${H * 0.75}, ${x_right + bulgeVal} ${H * 0.5} C ${x_right + bulgeVal} ${H * 0.25}, ${x_right - sideVal} ${H * 0.25}, ${x_right} 0 Z`;
+    const leftPath = `M ${x_left} 0 C ${x_left + sideVal} ${H * yTop}, ${x_left - bulgeVal} ${H * yTop}, ${x_left - bulgeVal} ${H * 0.5} C ${x_left - bulgeVal} ${H * yBottom}, ${x_left + sideVal} ${H * yBottom}, ${x_left} ${H}`;
+    const rightPath = `L ${x_right} ${H} C ${x_right - sideVal} ${H * yBottom}, ${x_right + bulgeVal} ${H * yBottom}, ${x_right + bulgeVal} ${H * 0.5} C ${x_right + bulgeVal} ${H * yTop}, ${x_right - sideVal} ${H * yTop}, ${x_right} 0 Z`;
     
     return `${leftPath} ${rightPath}`;
   } else {
-    // Right card expanding left, starts at startLeft, moves to 0
-    const x_curr = startLeft - p * startLeft;
-    return `M ${x_curr} 0 C ${x_curr + sideVal} ${H * 0.25}, ${x_curr - bulgeVal} ${H * 0.25}, ${x_curr - bulgeVal} ${H * 0.5} C ${x_curr - bulgeVal} ${H * 0.75}, ${x_curr + sideVal} ${H * 0.75}, ${x_curr} ${H} L ${W} ${H} L ${W} 0 Z`;
+    const x_curr = startLeft - pWidth * startLeft;
+    return `M ${x_curr} 0 C ${x_curr + sideVal} ${H * yTop}, ${x_curr - bulgeVal} ${H * yTop}, ${x_curr - bulgeVal} ${H * 0.5} C ${x_curr - bulgeVal} ${H * yBottom}, ${x_curr + sideVal} ${H * yBottom}, ${x_curr} ${H} L ${W} ${H} L ${W} 0 Z`;
   }
 };
 
@@ -87,6 +91,7 @@ export default function ScrollVideoHero() {
   const scrollPathRef = useRef<SVGPathElement>(null);
   const scrollProgress = useRef({ current: 0, target: 0 });
   const transitionStartPos = useRef({ startLeft: 0, startRight: 0 });
+  const [startPos, setStartPos] = useState({ startLeft: 0, startRight: 0 });
 
   // Preload all frames on mount
   useEffect(() => {
@@ -459,18 +464,16 @@ export default function ScrollVideoHero() {
     const isMobile = W < 768;
     const transitionIndex = isMobile ? 0 : index;
 
-    if (isMobile) {
-      transitionStartPos.current = {
-        startLeft: 0,
-        startRight: 0,
-      };
-    } else {
+    let pos = { startLeft: 0, startRight: 0 };
+    if (!isMobile) {
       const rect = element.getBoundingClientRect();
-      transitionStartPos.current = {
+      pos = {
         startLeft: rect.left,
         startRight: rect.right,
       };
     }
+    transitionStartPos.current = pos;
+    setStartPos(pos);
 
     if (overlayRef.current) {
       overlayRef.current.classList.remove("hidden");
@@ -494,7 +497,8 @@ export default function ScrollVideoHero() {
         if (pathRef.current) {
           const dPath = getPath(
             transitionIndex,
-            x,
+            x, // pWidth
+            x, // pAnim
             bulge,
             W,
             H,
@@ -506,24 +510,24 @@ export default function ScrollVideoHero() {
         if (imageRef.current) {
           const startL = transitionStartPos.current.startLeft;
           const startR = transitionStartPos.current.startRight;
+          const buffer = 260;
           
           let imgX = 0;
           let imgW = W;
-          const buffer = 200;
           
           if (transitionIndex === 0) {
             const x_curr = startR + x * (W - startR);
-            imgX = 0;
-            imgW = Math.min(W, x_curr + buffer);
+            imgX = -buffer;
+            imgW = x_curr + 2 * buffer;
           } else if (transitionIndex === 2) {
             const x_curr = startL * (1 - x);
-            imgX = Math.max(0, x_curr - buffer);
-            imgW = W - imgX;
+            imgX = x_curr - buffer;
+            imgW = (W - x_curr) + 2 * buffer;
           } else {
             const x_left = startL * (1 - x);
             const x_right = startR + x * (W - startR);
-            imgX = Math.max(0, x_left - buffer);
-            imgW = Math.min(W, x_right + buffer) - imgX;
+            imgX = x_left - buffer;
+            imgW = (x_right - x_left) + 2 * buffer;
           }
           
           imageRef.current.setAttribute("x", imgX.toString());
@@ -544,37 +548,46 @@ export default function ScrollVideoHero() {
       transitionProgress.current,
       {
         x: 1,
-        duration: 1.2,
-        ease: "power4.inOut",
+        duration: 1.3,
+        ease: "power1.inOut",
       },
       0,
     );
     tl.to(
       transitionProgress.current,
       {
-        bulge: 160,
-        duration: 0.5,
-        ease: "power3.out",
+        bulge: 40,
+        duration: 0.4,
+        ease: "power1.inOut",
       },
       0,
     );
     tl.to(
       transitionProgress.current,
       {
-        bulge: -30,
-        duration: 0.5,
-        ease: "power2.inOut",
+        bulge: 220,
+        duration: 0.35,
+        ease: "power1.out",
       },
-      0.5,
+      0.4,
+    );
+    tl.to(
+      transitionProgress.current,
+      {
+        bulge: -35,
+        duration: 0.35,
+        ease: "power1.inOut",
+      },
+      0.75,
     );
     tl.to(
       transitionProgress.current,
       {
         bulge: 0,
         duration: 0.2,
-        ease: "power2.out",
+        ease: "power1.out",
       },
-      1.0,
+      1.1,
     );
   };
 
@@ -600,7 +613,8 @@ export default function ScrollVideoHero() {
             if (pathRef.current) {
               const dPath = getPath(
                 transitionIndex,
-                x,
+                x,     // pWidth
+                1 - x, // pAnim (close animation progress is 1 - x)
                 bulge,
                 W,
                 H,
@@ -612,24 +626,24 @@ export default function ScrollVideoHero() {
             if (imageRef.current) {
               const startL = transitionStartPos.current.startLeft;
               const startR = transitionStartPos.current.startRight;
+              const buffer = 260;
               
               let imgX = 0;
               let imgW = W;
-              const buffer = 200;
               
               if (transitionIndex === 0) {
                 const x_curr = startR + x * (W - startR);
-                imgX = 0;
-                imgW = Math.min(W, x_curr + buffer);
+                imgX = -buffer;
+                imgW = x_curr + 2 * buffer;
               } else if (transitionIndex === 2) {
                 const x_curr = startL * (1 - x);
-                imgX = Math.max(0, x_curr - buffer);
-                imgW = W - imgX;
+                imgX = x_curr - buffer;
+                imgW = (W - x_curr) + 2 * buffer;
               } else {
                 const x_left = startL * (1 - x);
                 const x_right = startR + x * (W - startR);
-                imgX = Math.max(0, x_left - buffer);
-                imgW = Math.min(W, x_right + buffer) - imgX;
+                imgX = x_left - buffer;
+                imgW = (x_right - x_left) + 2 * buffer;
               }
               
               imageRef.current.setAttribute("x", imgX.toString());
@@ -657,37 +671,46 @@ export default function ScrollVideoHero() {
           transitionProgress.current,
           {
             x: 0,
-            duration: 1.2,
-            ease: "power4.inOut",
+            duration: 1.3,
+            ease: "power1.inOut",
           },
           0,
         );
         tl.to(
           transitionProgress.current,
           {
-            bulge: 180, // stretch value peaks
-            duration: 0.5,
-            ease: "power3.out",
+            bulge: -45,
+            duration: 0.4,
+            ease: "power1.inOut",
           },
           0,
         );
         tl.to(
           transitionProgress.current,
           {
-            bulge: -35,
-            duration: 0.5,
-            ease: "power2.inOut",
+            bulge: -240, // opposite direction peak stretch!
+            duration: 0.35,
+            ease: "power1.out",
           },
-          0.5,
+          0.4,
         );
         tl.to(
           transitionProgress.current,
           {
-            bulge: 0, // stretch value returns to 0
+            bulge: 40, // opposite recoil!
+            duration: 0.35,
+            ease: "power1.inOut",
+          },
+          0.75,
+        );
+        tl.to(
+          transitionProgress.current,
+          {
+            bulge: 0,
             duration: 0.2,
-            ease: "power2.out",
+            ease: "power1.out",
           },
-          1.0,
+          1.1,
         );
       },
     });
@@ -1028,8 +1051,8 @@ export default function ScrollVideoHero() {
             <image
               ref={imageRef}
               href={SERVICES_DATA[activeCard].image}
-              x={transitionStartPos.current.startLeft}
-              width={transitionStartPos.current.startRight - transitionStartPos.current.startLeft}
+              x={startPos.startLeft - 260}
+              width={(startPos.startRight - startPos.startLeft) + 520}
               height="100%"
               preserveAspectRatio="xMidYMid slice"
               clipPath="url(#card-clip)"
