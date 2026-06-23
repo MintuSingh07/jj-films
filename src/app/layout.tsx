@@ -30,6 +30,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${cormorant.variable} ${outfit.variable} antialiased`}
+      suppressHydrationWarning
     >
       <body className="min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-background">
         <div className="grain-overlay" />

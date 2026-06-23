@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -70,4 +71,9 @@ html {
   70% { transform:translate(0%, 15%); }
   80% { transform:translate(3%, 35%); }
   90% { transform:translate(-10%, 10%); }
+}
+
+.font-loader {
+  font-family: 'Big Shoulders Display', sans-serif;
+  text-transform: uppercase;
 }
