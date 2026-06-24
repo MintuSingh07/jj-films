@@ -93,6 +93,18 @@ export default function ScrollVideoHero() {
   const scrollPathRef = useRef<SVGPathElement>(null);
   const scrollProgress = useRef({ current: 0, target: 0 });
   const transitionStartPos = useRef({ startLeft: 0, startRight: 0 });
+  const mousePosition = useRef({ x: 0, y: 0 });
+
+  // Track mouse coordinates globally to detect hover target when closing details
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      mousePosition.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
   // Preload all frames on mount
   useEffect(() => {
@@ -726,6 +738,26 @@ export default function ScrollVideoHero() {
             if (globalWindow.lenis) {
               globalWindow.lenis.start();
             }
+
+            // Detect which card the cursor is currently over and set it as active hover
+            const element = document.elementFromPoint(
+              mousePosition.current.x,
+              mousePosition.current.y
+            );
+            let foundCard = false;
+            if (element) {
+              const card = element.closest(".services-card");
+              if (card) {
+                const indexStr = card.getAttribute("data-index");
+                if (indexStr !== null) {
+                  setActiveHoverCard(parseInt(indexStr, 10));
+                  foundCard = true;
+                }
+              }
+            }
+            if (!foundCard) {
+              setActiveHoverCard(null);
+            }
           },
         });
 
@@ -1075,6 +1107,7 @@ export default function ScrollVideoHero() {
           return (
             <div
               key={index}
+              data-index={index}
               onClick={(e) => handleCardClick(index, e.currentTarget)}
               onMouseEnter={() => {
                 if (activeCard === null) {
