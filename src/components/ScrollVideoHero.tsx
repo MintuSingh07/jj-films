@@ -418,33 +418,35 @@ export default function ScrollVideoHero() {
     // Text Block 1 animations
     tl.fromTo(
       ".text-block-1",
-      { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 2, ease: "power4.out" },
+      { opacity: 0, y: 40, display: "block" },
+      { opacity: 1, y: 0, duration: 1.0, ease: "power4.out" },
       1.5,
     );
     tl.to(
       ".text-block-1",
-      { opacity: 0, y: -40, duration: 1.5, ease: "power4.in" },
-      4.5,
+      { opacity: 0, y: -40, duration: 0.8, ease: "power4.in" },
+      4.0,
     );
+    tl.set(".text-block-1", { display: "none" }, 4.8);
 
     // Text Block 2 animations
     tl.fromTo(
       ".text-block-2",
-      { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 2, ease: "power4.out" },
-      5.5,
+      { opacity: 0, y: 40, display: "block" },
+      { opacity: 1, y: 0, duration: 1.0, ease: "power4.out" },
+      5.2,
     );
     tl.to(
       ".text-block-2",
-      { opacity: 0, y: -40, duration: 1.5, ease: "power4.in" },
-      8.5,
+      { opacity: 0, y: -40, duration: 0.8, ease: "power4.in" },
+      7.7,
     );
+    tl.set(".text-block-2", { display: "none" }, 8.5);
 
     // Text Block 3 animations (JJ FILMS branding)
     tl.fromTo(
       ".text-block-3",
-      { opacity: 0, y: 40 },
+      { opacity: 0, y: 40, display: "block" },
       { opacity: 1, y: 0, duration: 1.0, ease: "power4.out" },
       9.0, // Fades in earlier to be fully visible before video finish
     );
