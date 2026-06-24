@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 const TOTAL_FRAMES = 240;
+const INITIAL_FRAMES = 30;
 const HISTOGRAM_HEIGHTS = [30, 55, 45, 75, 40, 65, 50, 85, 35, 60, 25, 70];
 
 const SERVICES_DATA = [
@@ -98,32 +99,74 @@ export default function ScrollVideoHero() {
   useEffect(() => {
     let active = true;
     const images: HTMLImageElement[] = [];
-    let count = 0;
+    
+    // Initialize image slots for all frames
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      images.push(new Image());
+    }
+    imagesRef.current = images;
 
-    const handleImageLoad = () => {
+    let initialLoaded = 0;
+
+    const handleInitialLoad = () => {
       if (!active) return;
-      count++;
-      setLoadedCount(count);
-      if (count === TOTAL_FRAMES) {
+      initialLoaded++;
+      setLoadedCount(initialLoaded);
+      if (initialLoaded === INITIAL_FRAMES) {
         setIsLoaded(true);
+        // Start loading the background frames
+        loadBackgroundFrames();
       }
     };
 
-    const handleImageError = () => {
+    const handleInitialError = () => {
       if (!active) return;
       setLoadError(true);
     };
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
-      const img = new Image();
+    // Load initial 30 frames immediately to reveal the website front face
+    for (let i = 1; i <= INITIAL_FRAMES; i++) {
+      const img = images[i - 1];
       const frameNum = i.toString().padStart(3, "0");
+      img.onload = handleInitialLoad;
+      img.onerror = handleInitialError;
       img.src = `/frames/frame-${frameNum}.webp`;
-      img.onload = handleImageLoad;
-      img.onerror = handleImageError;
-      images.push(img);
     }
 
-    imagesRef.current = images;
+    // Progressively load remaining frames during idle time to minimize network congestion
+    const loadBackgroundFrames = () => {
+      if (!active) return;
+      let nextIndex = INITIAL_FRAMES;
+
+      const loadNextBatch = () => {
+        if (!active || nextIndex >= TOTAL_FRAMES) return;
+
+        const batchSize = 10;
+        const end = Math.min(TOTAL_FRAMES, nextIndex + batchSize);
+
+        for (let i = nextIndex + 1; i <= end; i++) {
+          const img = images[i - 1];
+          const frameNum = i.toString().padStart(3, "0");
+          // Background frames load without triggers so page scroll trigger can build and run
+          img.src = `/frames/frame-${frameNum}.webp`;
+        }
+
+        nextIndex = end;
+        if (nextIndex < TOTAL_FRAMES) {
+          const requestIdle =
+            typeof window !== "undefined" && (window as any).requestIdleCallback
+              ? (window as any).requestIdleCallback
+              : (cb: any) => setTimeout(cb, 50);
+          requestIdle(() => loadNextBatch());
+        }
+      };
+
+      const requestIdle =
+        typeof window !== "undefined" && (window as any).requestIdleCallback
+          ? (window as any).requestIdleCallback
+          : (cb: any) => setTimeout(cb, 50);
+      requestIdle(() => loadNextBatch());
+    };
 
     return () => {
       active = false;
@@ -174,8 +217,28 @@ export default function ScrollVideoHero() {
 
     // Helper to draw current frame using 'object-cover' logic
     const drawFrame = (frameIndex: number) => {
-      const img = imagesRef.current[frameIndex - 1];
-      if (!img || !img.complete) return;
+      let img = imagesRef.current[frameIndex - 1];
+      
+      // If the target frame is not loaded, find the closest loaded frame
+      if (!img || !img.complete) {
+        let closestDist = Infinity;
+        let closestImg = null;
+        for (let i = 0; i < imagesRef.current.length; i++) {
+          const currentImg = imagesRef.current[i];
+          if (currentImg && currentImg.complete) {
+            const dist = Math.abs(i - (frameIndex - 1));
+            if (dist < closestDist) {
+              closestDist = dist;
+              closestImg = currentImg;
+            }
+          }
+        }
+        if (closestImg) {
+          img = closestImg;
+        } else {
+          return; // No frames loaded at all yet
+        }
+      }
 
       const canvasWidth = canvas.width;
       const canvasHeight = canvas.height;
@@ -454,7 +517,7 @@ export default function ScrollVideoHero() {
   }, [isLoaded]);
 
   // Percentage value for loading indicator
-  const loadPercentage = Math.round((loadedCount / TOTAL_FRAMES) * 100);
+  const loadPercentage = Math.min(100, Math.round((loadedCount / INITIAL_FRAMES) * 100));
 
   const handleCardClick = (index: number, element: HTMLDivElement) => {
     if (isTransitioningRef.current || activeCard !== null) return;
