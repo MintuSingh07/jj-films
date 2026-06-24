@@ -239,10 +239,10 @@ export default function ScrollVideoHero() {
     gsap.set(".services-num", { scale: 0.8, opacity: 0 });
     gsap.set(".services-footer", { y: 20, opacity: 0 });
 
-    // Create the timed cards timeline for automated animation
-    const cardsTimeline = gsap.timeline({ paused: true });
-    cardsTimeline
-      // Automatically zoom and fade out the canvas
+    const revealTimeline = gsap.timeline({ paused: true });
+
+    revealTimeline
+      // 1. Zoom and fade out the canvas
       .to(
         canvas,
         {
@@ -253,78 +253,95 @@ export default function ScrollVideoHero() {
         },
         0,
       )
-      // Automatically reveal cards overlay
+      .set(canvas, { display: "none" }, 1.0)
+
+      // 2. Fade out Text Block 3 (JJ FILMS branding)
+      .to(
+        ".text-block-3",
+        {
+          opacity: 0,
+          y: -40,
+          duration: 0.6,
+          ease: "power4.in",
+        },
+        0,
+      )
+      .set(".text-blocks-container", { display: "none" }, 0.6)
+
+      // 3. Reveal cards overlay and slide up the cards
       .to(
         ".services-overlay",
         {
           opacity: 1,
           duration: 0.1,
         },
-        0.2,
+        0.8,
       )
-      // Staggered slide up of the 3 cards from the bottom with ultra-smooth power4.out ease
       .to(
         ".services-card",
         {
           yPercent: 0,
           scale: 1,
           opacity: 1,
-          duration: 1.6,
-          stagger: 0.12,
+          duration: 1.2,
+          stagger: 0.1,
           ease: "power4.out",
         },
-        0.2,
+        0.8,
       )
+
+      // 4. Reveal individual card components
       .to(
         ".services-border",
         {
           scale: 1,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power4.out",
-        },
-        0.6,
-      )
-      .to(
-        ".services-num",
-        {
-          scale: 1,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power4.out",
-          stagger: 0.1,
-        },
-        0.8,
-      )
-      .to(
-        ".services-content",
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.8,
-          ease: "power4.out",
-          stagger: 0.1,
-        },
-        0.9,
-      )
-      .to(
-        ".services-footer",
-        {
-          y: 0,
           opacity: 1,
           duration: 0.6,
           ease: "power4.out",
         },
         1.2,
       )
-      // Enable pointer events / hover selection only after a delay of 2.5 seconds (a few seconds after scrolling to the section)
+      .to(
+        ".services-num",
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.6,
+          ease: "power4.out",
+          stagger: 0.08,
+        },
+        1.4,
+      )
+      .to(
+        ".services-content",
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.6,
+          ease: "power4.out",
+          stagger: 0.08,
+        },
+        1.5,
+      )
+      .to(
+        ".services-footer",
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: "power4.out",
+        },
+        1.7,
+      )
+
+      // 5. Enable pointer events / hover selection
       .to(
         ".services-overlay",
         {
           pointerEvents: "auto",
           duration: 0.1,
         },
-        2.5,
+        2.3,
       );
 
     // Timeline to animate the virtual frame playhead index and overlays on scroll
@@ -337,11 +354,10 @@ export default function ScrollVideoHero() {
         pin: true,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          // Trigger cardsTimeline to play/reverse automatically at 85% progress
-          if (self.progress >= 0.85) {
-            cardsTimeline.play();
+          if (self.progress >= 0.95) {
+            revealTimeline.play();
           } else {
-            cardsTimeline.reverse();
+            revealTimeline.reverse();
           }
           // Set scroll warp target from velocity
           scrollProgress.current.target = self.getVelocity();
@@ -355,7 +371,7 @@ export default function ScrollVideoHero() {
       },
     });
 
-    // Playhead animation (frames 1 to 240) finishes at 85% of the scroll timeline (duration 10.2)
+    // Playhead animation (frames 1 to 240) finishes at 92.7% of the scroll timeline (duration 10.2)
     tl.to(
       playhead,
       {
@@ -370,9 +386,6 @@ export default function ScrollVideoHero() {
       0,
     );
 
-    // Dummy spacer to extend scroll timeline to 12.0
-    tl.to({}, { duration: 1.8 }, 10.2);
-
     // Fade out scroll guide early in the scroll progress
     tl.to(
       ".scroll-guide",
@@ -383,6 +396,11 @@ export default function ScrollVideoHero() {
         ease: "power4.out",
       },
       0.2,
+    );
+    tl.set(
+      ".scroll-guide",
+      { display: "none" },
+      2.0,
     );
 
     // Text Block 1 animations
@@ -411,18 +429,16 @@ export default function ScrollVideoHero() {
       8.5,
     );
 
-    // Text Block 3 animations
+    // Text Block 3 animations (JJ FILMS branding)
     tl.fromTo(
       ".text-block-3",
       { opacity: 0, y: 40 },
-      { opacity: 1, y: 0, duration: 2, ease: "power4.out" },
-      9.5,
+      { opacity: 1, y: 0, duration: 1.0, ease: "power4.out" },
+      9.0, // Fades in earlier to be fully visible before video finish
     );
-    tl.to(
-      ".text-block-3",
-      { opacity: 0, y: -40, duration: 1.5, ease: "power4.in" },
-      10.2, // Fades out exactly when video finishes scrubbing
-    );
+
+    // Dummy spacer to extend scroll timeline to 11.0
+    tl.to({}, { duration: 0.8 }, 10.2);
 
     const updateScrollWarp = () => {
       const target = scrollProgress.current.target * 0.15;
@@ -447,7 +463,7 @@ export default function ScrollVideoHero() {
       window.removeEventListener("resize", handleResize);
       tl.scrollTrigger?.kill();
       tl.kill();
-      cardsTimeline.kill();
+      revealTimeline.kill();
       loaderExitTl.kill();
       gsap.ticker.remove(updateScrollWarp);
     };
@@ -980,34 +996,43 @@ export default function ScrollVideoHero() {
       />
 
       {/* Cinematic Text Overlays */}
-      <div className="absolute inset-0 z-10 pointer-events-none p-10 md:p-24 flex items-end justify-start overflow-hidden">
+      <div className="text-blocks-container absolute inset-0 z-10 pointer-events-none p-10 md:p-24 flex items-end justify-start overflow-hidden">
         {/* Text Block 1 */}
-        <div className="absolute text-left opacity-0 translate-y-10 text-block-1 select-none bottom-20 md:bottom-32 left-10 md:left-24">
-          <h2 className="font-display text-4xl md:text-7xl font-light italic tracking-[0.15em] text-[#eae6e1]">
-            Cinematic Vision
+        <div className="absolute text-left opacity-0 translate-y-10 text-block-1 select-none bottom-20 md:bottom-32 left-10 md:left-24 max-w-xl">
+          <span className="font-mono text-[9px] md:text-[10px] tracking-[0.35em] text-accent uppercase">
+            30+ Years of Cinematic Excellence
+          </span>
+          <h2 className="font-display text-4xl md:text-6xl font-light italic tracking-wide text-[#eae6e1] mt-3">
+            3,000+ Masterpieces
           </h2>
-          <p className="font-body text-[10px] md:text-xs tracking-[0.4em] text-[#7c7c82] mt-3 uppercase">
-            Every frame, a crafted legacy
+          <p className="font-body text-xs md:text-sm text-[#eae6e1]/70 mt-4 leading-relaxed">
+            Trusted by industry leaders including Tanishq, Titan, Hitachi, and Highly to deliver high-fidelity cinematic campaigns globally.
           </p>
         </div>
 
         {/* Text Block 2 */}
-        <div className="absolute text-left opacity-0 translate-y-10 text-block-2 select-none bottom-20 md:bottom-32 left-10 md:left-24">
-          <h2 className="font-display text-4xl md:text-7xl font-light italic tracking-[0.15em] text-[#eae6e1]">
-            Uncompromising Detail
+        <div className="absolute text-left opacity-0 translate-y-10 text-block-2 select-none bottom-20 md:bottom-32 left-10 md:left-24 max-w-xl">
+          <span className="font-mono text-[9px] md:text-[10px] tracking-[0.35em] text-accent uppercase">
+            Uncompromising Operational Trust
+          </span>
+          <h2 className="font-display text-4xl md:text-6xl font-light italic tracking-wide text-[#eae6e1] mt-3">
+            Zero-Friction Execution
           </h2>
-          <p className="font-body text-[10px] md:text-xs tracking-[0.4em] text-[#7c7c82] mt-3 uppercase">
-            Pristine 4K celluloid clarity
+          <p className="font-body text-xs md:text-sm text-[#eae6e1]/70 mt-4 leading-relaxed">
+            Pioneering complete transparency, strict time commitments, and no hidden costs. Once assigned, we own the execution end-to-end so you don't have to worry about a thing.
           </p>
         </div>
 
         {/* Text Block 3 */}
-        <div className="absolute text-left opacity-0 translate-y-10 text-block-3 select-none bottom-20 md:bottom-32 left-10 md:left-24">
-          <h2 className="font-display text-5xl md:text-8xl font-medium uppercase tracking-[0.2em] text-accent drop-shadow-[0_0_30px_rgba(197,168,128,0.25)]">
+        <div className="absolute text-left opacity-0 translate-y-10 text-block-3 select-none bottom-20 md:bottom-32 left-10 md:left-24 max-w-xl">
+          <span className="font-mono text-[9px] md:text-[10px] tracking-[0.35em] text-accent uppercase">
+            Future-Ready Celluloid Tech
+          </span>
+          <h2 className="font-display text-5xl md:text-7xl font-medium uppercase tracking-[0.2em] text-[#eae6e1] mt-3 drop-shadow-[0_0_30px_rgba(197,168,128,0.25)]">
             JJ FILMS
           </h2>
-          <p className="font-body text-[10px] md:text-xs tracking-[0.5em] text-[#eae6e1] mt-4 uppercase">
-            Redefining modern cinema
+          <p className="font-body text-xs md:text-sm text-[#eae6e1]/70 mt-4 leading-relaxed">
+            Harnessing cutting-edge visual systems with a global footprint, an unbroken record of 100% satisfaction, and zero negative reviews.
           </p>
         </div>
       </div>
