@@ -381,7 +381,7 @@ export default function ScrollVideoHero() {
     const images: HTMLImageElement[] = new Array(TOTAL_FRAMES);
     imagesRef.current = images;
 
-    const CRITICAL_STEP = 4;
+    const CRITICAL_STEP = 8;
     const criticalIndices: number[] = [];
     const backgroundIndices: number[] = [];
 
@@ -427,7 +427,7 @@ export default function ScrollVideoHero() {
 
     // 2. Load background frames in batches to avoid connection starvation
     let bgIndex = 0;
-    const BATCH_SIZE = 6;
+    const BATCH_SIZE = 16;
 
     const loadNextBatch = () => {
       if (!active || bgIndex >= backgroundIndices.length) return;
@@ -514,25 +514,25 @@ export default function ScrollVideoHero() {
     });
 
     loaderExitTl
-      // 1. Fade out all loader text overlays and UI metrics to empty the loader
+      // 1. Fade out all loader text overlays and UI metrics quickly
       .to(".loader-content", {
         opacity: 0,
-        duration: 0.2,
-        ease: "power4.out",
+        duration: 0.1,
+        ease: "power3.out",
       })
-      // 2. Staggered lifting of the vertical curtain strips starts immediately after text vanish completes
+      // 2. Staggered lifting of the vertical curtain strips
       .to(".loader-strip", {
         yPercent: -100,
-        duration: 0.8,
-        stagger: 0.05,
-        ease: "power4.inOut",
+        duration: 0.5,
+        stagger: 0.03,
+        ease: "power3.inOut",
       })
-      // 3. Smooth reveal / lens zoom-out transition of the background canvas (increased intensity)
+      // 3. Smooth reveal / lens zoom-out transition of the background canvas
       .fromTo(
         canvas,
-        { scale: 1.3, opacity: 0.5 },
-        { scale: 1, opacity: 1, duration: 1.4, ease: "power4.out" },
-        "-=0.7", // starts shortly after curtain strips start lifting
+        { scale: 1.25, opacity: 0.6 },
+        { scale: 1, opacity: 1, duration: 0.8, ease: "power3.out" },
+        "-=0.45", // starts shortly after curtain strips start lifting
       );
 
     // Find the nearest loaded frame to prevent blank frames during background load
