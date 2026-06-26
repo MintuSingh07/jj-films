@@ -354,9 +354,9 @@ export default function ScrollVideoHero() {
       )
       .set(canvas, { display: "none" }, 1.0)
 
-      // 2. Fade out Text Block 3 (JJ FILMS branding)
+      // 2. Fade out Text Blocks Container
       .to(
-        ".text-block-3",
+        ".text-blocks-container",
         {
           opacity: 0,
           y: -40,
