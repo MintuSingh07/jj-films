@@ -106,36 +106,90 @@ export default function ScrollVideoHero() {
     };
   }, []);
 
-  // Preload all frames on mount
+  // Preload frames progressively to unlock interaction quickly and prevent queue saturation
   useEffect(() => {
     let active = true;
-    const images: HTMLImageElement[] = [];
-    let count = 0;
+    const images: HTMLImageElement[] = new Array(TOTAL_FRAMES);
+    imagesRef.current = images;
 
-    const handleImageLoad = () => {
+    const CRITICAL_STEP = 4;
+    const criticalIndices: number[] = [];
+    const backgroundIndices: number[] = [];
+
+    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+      if ((i - 1) % CRITICAL_STEP === 0 || i === TOTAL_FRAMES) {
+        criticalIndices.push(i);
+      } else {
+        backgroundIndices.push(i);
+      }
+    }
+
+    const totalCritical = criticalIndices.length;
+    let loadedCritical = 0;
+
+    const handleCriticalLoad = () => {
       if (!active) return;
-      count++;
-      setLoadedCount(count);
-      if (count === TOTAL_FRAMES) {
+      loadedCritical++;
+      // Map loaded critical progress to visual 0-240 scale
+      setLoadedCount(Math.round((loadedCritical / totalCritical) * TOTAL_FRAMES));
+      
+      if (loadedCritical === totalCritical) {
         setIsLoaded(true);
+        // Begin batch loading the remaining background frames
+        loadBackgroundQueue();
       }
     };
 
     const handleImageError = () => {
       if (!active) return;
-      setLoadError(true);
+      // Continue loading even on individual asset failures
+      console.warn("Asset pipeline frame loading deferred");
     };
 
-    for (let i = 1; i <= TOTAL_FRAMES; i++) {
+    // 1. Preload keyframes first
+    criticalIndices.forEach((i) => {
       const img = new Image();
       const frameNum = i.toString().padStart(3, "0");
       img.src = `/frames/frame-${frameNum}.webp`;
-      img.onload = handleImageLoad;
+      img.onload = handleCriticalLoad;
       img.onerror = handleImageError;
-      images.push(img);
-    }
+      images[i - 1] = img;
+    });
 
-    imagesRef.current = images;
+    // 2. Load background frames in batches to avoid connection starvation
+    let bgIndex = 0;
+    const BATCH_SIZE = 6;
+
+    const loadNextBatch = () => {
+      if (!active || bgIndex >= backgroundIndices.length) return;
+
+      const limit = Math.min(bgIndex + BATCH_SIZE, backgroundIndices.length);
+      let batchLoaded = 0;
+      const batchSize = limit - bgIndex;
+
+      const onBgLoad = () => {
+        if (!active) return;
+        batchLoaded++;
+        if (batchLoaded === batchSize) {
+          bgIndex = limit;
+          setTimeout(loadNextBatch, 20); // brief yield to main thread
+        }
+      };
+
+      for (let k = bgIndex; k < limit; k++) {
+        const i = backgroundIndices[k];
+        const img = new Image();
+        const frameNum = i.toString().padStart(3, "0");
+        img.src = `/frames/frame-${frameNum}.webp`;
+        img.onload = onBgLoad;
+        img.onerror = onBgLoad;
+        images[i - 1] = img;
+      }
+    };
+
+    const loadBackgroundQueue = () => {
+      setTimeout(loadNextBatch, 100);
+    };
 
     return () => {
       active = false;
@@ -184,9 +238,31 @@ export default function ScrollVideoHero() {
         "-=0.7", // starts shortly after curtain strips start lifting
       );
 
+    // Find the nearest loaded frame to prevent blank frames during background load
+    const findNearestLoadedFrame = (index: number): HTMLImageElement | null => {
+      const images = imagesRef.current;
+      if (!images) return null;
+      let dist = 1;
+      while (index - dist >= 1 || index + dist <= TOTAL_FRAMES) {
+        if (index - dist >= 1) {
+          const img = images[index - dist - 1];
+          if (img && img.complete) return img;
+        }
+        if (index + dist <= TOTAL_FRAMES) {
+          const img = images[index + dist - 1];
+          if (img && img.complete) return img;
+        }
+        dist++;
+      }
+      return null;
+    };
+
     // Helper to draw current frame using 'object-cover' logic
     const drawFrame = (frameIndex: number) => {
-      const img = imagesRef.current[frameIndex - 1];
+      let img = imagesRef.current[frameIndex - 1];
+      if (!img || !img.complete) {
+        img = findNearestLoadedFrame(frameIndex) || img;
+      }
       if (!img || !img.complete) return;
 
       const canvasWidth = canvas.width;
