@@ -84,6 +84,7 @@ export default function ScrollVideoHero() {
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [activeHoverCard, setActiveHoverCard] = useState<number | null>(null);
   const [transitionPath, setTransitionPath] = useState<string>("");
+  const [loadReelImages, setLoadReelImages] = useState(false);
   const [startPos, setStartPos] = useState({ startLeft: 0, startRight: 0 });
   const isTransitioningRef = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
@@ -105,6 +106,16 @@ export default function ScrollVideoHero() {
       window.removeEventListener("mousemove", handleMouseMove);
     };
   }, []);
+
+  // Lazy load reel section images after loader finishes to prioritize critical video frames
+  useEffect(() => {
+    if (isLoaded) {
+      const timer = setTimeout(() => {
+        setLoadReelImages(true);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoaded]);
 
   // Preload frames progressively to unlock interaction quickly and prevent queue saturation
   useEffect(() => {
@@ -1205,7 +1216,9 @@ export default function ScrollVideoHero() {
             {/* Background Zoom Image */}
             <div
               className={`card-bg-image card-bg-image-${index} absolute inset-0 bg-cover bg-center transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] scale-100 group-hover:scale-105`}
-              style={{ backgroundImage: `url('${service.image}')` }}
+              style={{
+                backgroundImage: loadReelImages ? `url('${service.image}')` : 'none',
+              }}
             />
             {/* Vignette Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/35 to-black/20 z-10" />
@@ -1263,7 +1276,7 @@ export default function ScrollVideoHero() {
               {/* Expanding image that fades to opacity 0 */}
               <image
                 ref={imageRef}
-                href={SERVICES_DATA[activeCard].image}
+                href={loadReelImages ? SERVICES_DATA[activeCard].image : ""}
                 x={startPos.startLeft - 260}
                 width={(startPos.startRight - startPos.startLeft) + 520}
                 height="100%"
