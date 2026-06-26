@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 
 const TOTAL_FRAMES = 240;
 const HISTOGRAM_HEIGHTS = [30, 55, 45, 75, 40, 65, 50, 85, 35, 60, 25, 70];
@@ -36,6 +38,251 @@ const SERVICES_DATA = [
     image: "/images/wedding_films.png",
   },
 ];
+
+const SERVICES_LIST = [
+  {
+    title: "Property Photography",
+    description: "High-quality interior and exterior photography for residential, commercial, and luxury properties.",
+  },
+  {
+    title: "Real Estate Videography",
+    description: "Cinematic property walkthrough videos designed to showcase spaces and increase buyer engagement.",
+  },
+  {
+    title: "Drone Photography & Videography",
+    description: "Aerial photography and cinematic drone footage highlighting location, scale, surroundings, and amenities.",
+  },
+  {
+    title: "Luxury Property Films",
+    description: "Premium storytelling videos for luxury villas, penthouses, resorts, and high-end developments.",
+  },
+  {
+    title: "Builder & Developer Project Shoots",
+    description: "Marketing visuals for ongoing and completed residential and commercial projects.",
+  },
+  {
+    title: "Architectural Photography",
+    description: "Professional photography focusing on design, materials, lighting, and architectural details.",
+  },
+  {
+    title: "Interior Photography",
+    description: "Showcasing interiors, furnishings, decor, and spatial aesthetics for designers and developers.",
+  },
+  {
+    title: "Property Marketing Reels",
+    description: "Short-form Instagram, Facebook, and YouTube reels optimized for social media marketing.",
+  },
+  {
+    title: "Virtual Property Tours",
+    description: "Immersive walkthrough experiences allowing potential buyers to explore remotely.",
+  },
+  {
+    title: "Construction Progress Documentation",
+    description: "Periodic photography and videography to track project development milestones.",
+  },
+  {
+    title: "360° Virtual Tours",
+    description: "Interactive virtual walkthroughs that allow viewers to explore properties remotely from any device.",
+  },
+];
+
+const COMMERCIAL_SERVICES = [
+  {
+    title: "Brand Storytelling Films",
+    description: "Premium cinematic narratives that capture your company's heritage, core values, and vision to build deep audience connection.",
+  },
+  {
+    title: "Product Launch Videos",
+    description: "High-impact, visually arresting product reveals featuring volumetric lighting and sleek macro shots to maximize engagement.",
+  },
+  {
+    title: "Social Media Campaigns",
+    description: "Short-form vertical video assets (Instagram Reels, TikTok, YouTube Shorts) designed for viral reach and audience retention.",
+  },
+  {
+    title: "TV & Broadcast Commercials",
+    description: "Full-scale television commercial production adhering to broadcast compliance standards, optimized for high conversion rates.",
+  },
+  {
+    title: "Corporate Event Cinematography",
+    description: "Multi-camera documentation of keynote sessions, conferences, summits, panel discussions, and corporate galas.",
+  },
+  {
+    title: "Testimonial & Case Study Videos",
+    description: "Authentic interview-driven client success stories highlighting product utility and building verified market trust.",
+  },
+  {
+    title: "Company Culture & Recruitment",
+    description: "Dynamic behind-the-scenes glimpses into daily operations, team synergy, and leadership vision to attract elite talent.",
+  },
+  {
+    title: "Aerial & Drone Videography",
+    description: "FAA-certified, high-resolution aerial cinematography for factory tours, corporate headquarters, and site developments.",
+  },
+  {
+    title: "Animated Explainer Videos",
+    description: "Custom motion graphics, character animations, and typography overlays to explain complex software, products, or workflows.",
+  },
+  {
+    title: "Behind-the-Scenes (BTS) Content",
+    description: "Intimate and engaging production logs highlighting the scale, effort, and creative details of large campaigns.",
+  },
+];
+
+const WEDDING_SERVICES = [
+  {
+    title: "Cinematic Highlight Film",
+    description: "An artistically edited, emotionally resonant summary film of your wedding day, set to custom licensed soundtracks.",
+  },
+  {
+    title: "Full-Feature Documentary Film",
+    description: "Comprehensive chronological coverage of the entire day—including full ceremony, complete speeches, and reception events.",
+  },
+  {
+    title: "Pre-Wedding Cinematic Shoot",
+    description: "Intimate, styled couple sessions capturing your love story in unique, cinematic locations before the wedding day.",
+  },
+  {
+    title: "Aerial Drone Cinematography",
+    description: "Breathtaking 4K drone footage highlighting the grandeur of your wedding venue, landscaping, and outdoor ceremonies.",
+  },
+  {
+    title: "Multi-Day Event Coverage",
+    description: "Extended cinematography teams documenting rehearsal dinners, welcome parties, morning activities, and post-wedding brunches.",
+  },
+  {
+    title: "Same-Day Edit (SDE) Film",
+    description: "A fast-turnaround mini-film produced and edited on-site, screened to your guests during the reception dinner.",
+  },
+  {
+    title: "Destination Wedding Cinematography",
+    description: "International travel-ready production crew equipped for remote venue setups, lighting shifts, and outdoor conditions.",
+  },
+  {
+    title: "High-Fidelity Audio Vows Capture",
+    description: "Multi-source lapel microphone systems capturing pristine audio of whispered vows, letters, and family speeches.",
+  },
+  {
+    title: "Bridal Portraits & Preparations",
+    description: "Intimate, macro shots documenting dress details, jewelry, prep sessions, and emotional moments before the walk down the aisle.",
+  },
+  {
+    title: "Anniversary & Legacy Vows Renewal",
+    description: "Cinematic renewal shoots documenting long-term unions, family achievements, and anniversary vow statements.",
+  },
+];
+
+const CARD_DETAILS = [
+  {
+    heroImage: "/images/real_estate_hero.png",
+    subtitle: "Architectural Spaces, Elevated",
+    title: (
+      <>
+        Real Estate
+        <br />
+        Cinematic Vision
+      </>
+    ),
+    description: "We document luxury estates, residential masterpieces, and commercial developments with pristine clarity. Every angle is carefully composed using cinematic camera motion, volumetric lighting, and advanced stabilizations to deliver absolute visual prestige.",
+    gridTag: "EXPERTISE & CAPABILITIES",
+    gridTitle: "Real Estate Services",
+    gridIntro: "From high-end luxury villa features to interactive virtual spaces, explore our specialized suites designed to scale developer property assets.",
+    services: SERVICES_LIST,
+    gallery: [
+      {
+        title: "Aura",
+        tagline: "LUXURY RESIDENCE",
+        image: "/images/real_estate_hero.png",
+        description: "High-ceiling architectural geometries captured at sunset, highlighting structural glass and ambient lighting.",
+      },
+      {
+        title: "Vortex",
+        tagline: "COMMERCIAL PLAZA",
+        image: "/images/real_estate.png",
+        description: "Dynamic aerial tracking shots emphasizing location scale, traffic accessibility, and surrounding landscape.",
+      },
+      {
+        title: "Mirage",
+        tagline: "OCEAN PENTHOUSE",
+        image: "/images/real_estate_hero.png",
+        description: "Ultra-wide angle interior framing showcasing spatial flow, bespoke textures, and panoramic ocean vistas.",
+      },
+    ],
+  },
+  {
+    heroImage: "/images/commercial_films.png",
+    subtitle: "Visual Narratives, Engineered",
+    title: (
+      <>
+        Commercial Films
+        <br />
+        Cinematic Stories
+      </>
+    ),
+    description: "Premium brand narratives engineered for the screen. From high-impact commercials to documentary-style brand stories, we direct cinematic campaigns that capture volumetric shadows, rich textures, and evoke deep emotional connections.",
+    gridTag: "BRAND SOLUTIONS & MARKETING",
+    gridTitle: "Commercial Production Services",
+    gridIntro: "High-concept campaigns, social media assets, and corporate documentaries designed to amplify your brand presence.",
+    services: COMMERCIAL_SERVICES,
+    gallery: [
+      {
+        title: "Titan",
+        tagline: "CRAFT BEVERAGE AD",
+        image: "/images/commercial_films.png",
+        description: "High-speed macro cinematography capturing condensation droplets and volumetric studio lighting.",
+      },
+      {
+        title: "Aether",
+        tagline: "TECH APPAREL REVEAL",
+        image: "/images/commercial_films.png",
+        description: "Dynamic motion control tracking shots highlighting fabric weave details and active athlete geometry.",
+      },
+      {
+        title: "Nexus",
+        tagline: "AUTOMOTIVE SPOT",
+        image: "/images/commercial_films.png",
+        description: "Cinematic tracking of luxury EV sweeping through volumetric mountain curves at blue hour.",
+      },
+    ],
+  },
+  {
+    heroImage: "/images/wedding_films.png",
+    subtitle: "Candid Moments, Preserved",
+    title: (
+      <>
+        Wedding Films
+        <br />
+        Cinematic Heirlooms
+      </>
+    ),
+    description: "High-fidelity cinematic keepsakes. We document luxury weddings and boutique events with an intimate, candid approach. Every stolen glance, whispered vow, and joyful tear is preserved forever on pristine 4K formats.",
+    gridTag: "CINEMATIC HEIRLOOMS & EVENTS",
+    gridTitle: "Wedding Film Services",
+    gridIntro: "From intimate cinematic highlights to comprehensive documentary features, explore how we preserve your legacy.",
+    services: WEDDING_SERVICES,
+    gallery: [
+      {
+        title: "Elysian",
+        tagline: "TUSCAN ESTATE",
+        image: "/images/wedding_films.png",
+        description: "Intimate golden hour portraits of the couple sweeping through antique olive groves.",
+      },
+      {
+        title: "Solace",
+        tagline: "CATHEDRAL VOWS",
+        image: "/images/wedding_films.png",
+        description: "Prism-filtered closeups of vows capture, preserving emotional details in high-fidelity 4K celluloid.",
+      },
+      {
+        title: "Rhapsody",
+        tagline: "LAKE RECEPTION",
+        image: "/images/wedding_films.png",
+        description: "Multi-angle drone sweeps capturing grand dinner setups and reception firework reveals.",
+      },
+    ],
+  },
+];
+
 
 const getPath = (
   index: number,
@@ -73,6 +320,7 @@ const getPath = (
 
 export default function ScrollVideoHero() {
   const triggerRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const imagesRef = useRef<HTMLImageElement[]>([]);
 
@@ -83,11 +331,14 @@ export default function ScrollVideoHero() {
 
   const [activeCard, setActiveCard] = useState<number | null>(null);
   const [activeHoverCard, setActiveHoverCard] = useState<number | null>(null);
+  const [galleryProgress, setGalleryProgress] = useState(0);
+  const [galleryActiveIndex, setGalleryActiveIndex] = useState(0);
   const [transitionPath, setTransitionPath] = useState<string>("");
   const [loadReelImages, setLoadReelImages] = useState(false);
   const [startPos, setStartPos] = useState({ startLeft: 0, startRight: 0 });
   const isTransitioningRef = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
+  const detailScrollRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
   const imageRef = useRef<SVGImageElement>(null);
   const transitionProgress = useRef({ x: 0, bulge: 0 });
@@ -95,6 +346,13 @@ export default function ScrollVideoHero() {
   const scrollProgress = useRef({ current: 0, target: 0 });
   const transitionStartPos = useRef({ startLeft: 0, startRight: 0 });
   const mousePosition = useRef({ x: 0, y: 0 });
+  const handleCloseDetailRef = useRef<() => void>(() => {});
+  const activeCardRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    activeCardRef.current = activeCard;
+  }, [activeCard]);
+
 
   // Track mouse coordinates globally to detect hover target when closing details
   useEffect(() => {
@@ -220,10 +478,38 @@ export default function ScrollVideoHero() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Loader exit transition timeline: empty contents -> hold -> lift staggered curtain strips
+    const params = new URLSearchParams(window.location.search);
+    const isClose = params.get("transition") === "close";
+
     const loaderExitTl = gsap.timeline({
       onComplete: () => {
         setShowLoader(false);
+        const isCards = params.get("scroll") === "cards";
+        const isClose = params.get("transition") === "close";
+
+        if (isCards || isClose) {
+          const globalWindow = window as unknown as {
+            lenis?: { scrollTo: (target: any, options?: any) => void; stop: () => void; start: () => void };
+          };
+          if (globalWindow.lenis) {
+            globalWindow.lenis.start();
+            globalWindow.lenis.scrollTo("bottom", { immediate: true });
+            if (isClose) {
+              globalWindow.lenis.stop();
+            }
+          } else {
+            window.scrollTo(0, document.documentElement.scrollHeight);
+          }
+          ScrollTrigger.refresh();
+        }
+
+        if (isClose) {
+          setTimeout(() => {
+            handleCloseDetailRef.current();
+          }, 100);
+        } else if (isCards) {
+          revealTimeline.play();
+        }
       },
     });
 
@@ -442,7 +728,6 @@ export default function ScrollVideoHero() {
         },
         2.3,
       );
-
     // Timeline to animate the virtual frame playhead index and overlays on scroll
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -456,7 +741,9 @@ export default function ScrollVideoHero() {
           if (self.progress >= 0.95) {
             revealTimeline.play();
           } else {
-            revealTimeline.reverse();
+            if (activeCardRef.current === null) {
+              revealTimeline.reverse();
+            }
           }
           // Set scroll warp target from velocity
           scrollProgress.current.target = self.getVelocity();
@@ -560,6 +847,51 @@ export default function ScrollVideoHero() {
 
     gsap.ticker.add(updateScrollWarp);
 
+    // Initialize full-screen S-curve details transition if returning via closing animation
+    if (isClose) {
+      const W = window.innerWidth;
+      const H = window.innerHeight;
+      const isMobile = W < 768;
+      const startLeft = 0;
+      const startRight = isMobile ? W : W / 3;
+
+      transitionStartPos.current = { startLeft, startRight };
+      setStartPos({ startLeft, startRight });
+      setActiveCard(0);
+
+      // Pre-set full-screen path
+      const initialPath = getPath(0, 1, 1, 0, W, H, startLeft, startRight);
+      setTransitionPath(initialPath);
+
+      // Pre-set CSS variables to hide card image and show black transition overlay
+      gsap.set(document.documentElement, {
+        "--transition-image-opacity": 0,
+        "--card-image-opacity-0": 0,
+      });
+
+      // Show overlay and stop Lenis scroll
+      if (overlayRef.current) {
+        overlayRef.current.classList.remove("hidden");
+        overlayRef.current.classList.add("pointer-events-auto");
+        overlayRef.current.classList.remove("pointer-events-none");
+      }
+      
+      const globalWindow = window as unknown as {
+        lenis?: { stop: () => void };
+      };
+      if (globalWindow.lenis) {
+        globalWindow.lenis.stop();
+      }
+
+      // Initialize the homepage cards to be fully visible underneath
+      revealTimeline.progress(1);
+    }
+
+    const isCards = params.get("scroll") === "cards";
+    if (isCards || isClose) {
+      window.history.replaceState(null, "", "/");
+    }
+
     return () => {
       window.removeEventListener("resize", handleResize);
       tl.scrollTrigger?.kill();
@@ -657,7 +989,6 @@ export default function ScrollVideoHero() {
         }
       },
       onComplete: () => {
-        isTransitioningRef.current = false;
         // Sync final full-screen path to React state so it survives any re-render
         const finalPath = getPath(
           transitionIndex,
@@ -671,6 +1002,7 @@ export default function ScrollVideoHero() {
         );
         setTransitionPath(finalPath);
 
+        isTransitioningRef.current = false;
         gsap.to(".service-detail-content", {
           opacity: 1,
           duration: 0.5,
@@ -920,6 +1252,97 @@ export default function ScrollVideoHero() {
       },
     });
   };
+
+  useEffect(() => {
+    handleCloseDetailRef.current = handleCloseDetail;
+  }, [handleCloseDetail]);
+
+  useEffect(() => {
+    const el = detailScrollRef.current;
+    if (!el || activeCard === null) return;
+
+    // Initialize local Lenis for smooth scrolling inside the details overlay container
+    const localLenis = new Lenis({
+      wrapper: el,
+      content: el.querySelector(".service-detail-content-inner") || el.firstElementChild || undefined,
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      gestureOrientation: "vertical",
+      smoothWheel: true,
+      wheelMultiplier: 1.0,
+    });
+
+    let rafId: number;
+    const tick = (time: number) => {
+      localLenis.raf(time);
+      rafId = requestAnimationFrame(tick);
+    };
+    rafId = requestAnimationFrame(tick);
+
+    let snapTimeout: any;
+    // Dynamic scroll tracking for the gallery inside overlay
+    const handleScroll = () => {
+      const section = el.querySelector("#mp-gallery-section") as HTMLElement;
+      if (!section) return;
+
+      const rect = section.getBoundingClientRect();
+      const viewHeight = window.innerHeight;
+      const totalScrollable = rect.height - viewHeight;
+
+      if (totalScrollable <= 0) return;
+
+      // Calculate progress of the gallery section from 0 to 1
+      const progress = Math.max(0, Math.min(1, -rect.top / totalScrollable));
+      setGalleryProgress(progress);
+
+      // Determine active index
+      let index = 0;
+      if (progress > 0.66) {
+        index = 2;
+      } else if (progress > 0.33) {
+        index = 1;
+      }
+      setGalleryActiveIndex(index);
+
+      // Debounce scroll snapping to closest project slide
+      clearTimeout(snapTimeout);
+      snapTimeout = setTimeout(() => {
+        // Only snap if we are within the scroll boundaries of the gallery section
+        if (progress > 0.05 && progress < 0.95) {
+          const targetIndex = Math.round(progress * 2);
+          const sectionScrollTop = el.scrollTop + rect.top; // absolute scroll offset of section top
+          const targetScroll = sectionScrollTop + targetIndex * (totalScrollable / 2);
+          
+          localLenis.scrollTo(targetScroll, {
+            duration: 0.9,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // match Lenis premium ease out
+          });
+        }
+      }, 250); // 250ms after last scroll event
+    };
+
+    localLenis.on("scroll", handleScroll);
+
+    const stopScrollPropagation = (e: Event) => {
+      e.stopPropagation();
+    };
+
+    // Prevent wheel/touch events from bubbling up to Lenis window listeners
+    el.addEventListener("wheel", stopScrollPropagation, { passive: false });
+    el.addEventListener("touchstart", stopScrollPropagation, { passive: true });
+    el.addEventListener("touchmove", stopScrollPropagation, { passive: false });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(snapTimeout);
+      localLenis.off("scroll", handleScroll);
+      localLenis.destroy();
+      el.removeEventListener("wheel", stopScrollPropagation);
+      el.removeEventListener("touchstart", stopScrollPropagation);
+      el.removeEventListener("touchmove", stopScrollPropagation);
+    };
+  }, [activeCard]);
 
   return (
     <div
@@ -1276,7 +1699,7 @@ export default function ScrollVideoHero() {
               {/* Expanding image that fades to opacity 0 */}
               <image
                 ref={imageRef}
-                href={loadReelImages ? SERVICES_DATA[activeCard].image : ""}
+                href={loadReelImages ? SERVICES_DATA[activeCard].image : undefined}
                 x={startPos.startLeft - 260}
                 width={(startPos.startRight - startPos.startLeft) + 520}
                 height="100%"
@@ -1292,9 +1715,218 @@ export default function ScrollVideoHero() {
 
         {activeCard !== null && (
           <div
+            ref={detailScrollRef}
             onClick={handleCloseDetail}
-            className="service-detail-content absolute inset-0 z-10 opacity-0 cursor-pointer"
-          />
+            data-lenis-prevent
+            className="service-detail-content absolute inset-0 z-10 opacity-0 overflow-y-auto h-screen w-screen pointer-events-auto cursor-pointer"
+          >
+            {/* Floating Top Navigation Row (Back Button) */}
+            <nav className="fixed top-8 left-8 md:top-12 md:left-16 z-40">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleCloseDetail();
+                }}
+                className="group inline-flex items-center gap-3.5 font-mono text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-foreground/60 transition-colors duration-500 hover:text-accent w-fit cursor-pointer border-none bg-transparent outline-none p-0"
+              >
+                <span className="inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2">
+                  ←
+                </span>
+                <span>Back to Cinema</span>
+              </button>
+            </nav>
+
+            {(() => {
+              const details = CARD_DETAILS[activeCard];
+              if (!details) return null;
+
+              return (
+                <div 
+                  onClick={(e) => e.stopPropagation()}
+                  className="service-detail-content-inner w-full min-h-screen text-left cursor-default select-text bg-[#030303]"
+                >
+                  {/* Hero Section */}
+                  <section
+                    className="relative h-[80vh] md:h-[90vh] flex items-center justify-start px-8 md:px-24 bg-cover bg-center overflow-hidden"
+                    style={{
+                      backgroundImage: `url('${details.heroImage}')`,
+                    }}
+                  >
+                    {/* Cinematic Vignette/Dark Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30 z-10 pointer-events-none" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-black/40 z-10 pointer-events-none" />
+                    
+                    {/* Dynamic backdrop grid lines for high-end look */}
+                    <div className="absolute inset-0 z-15 pointer-events-none opacity-20">
+                      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-accent/25" />
+                      <div className="absolute top-0 left-1/4 h-full w-[1px] bg-accent/25" />
+                      <div className="absolute top-0 left-3/4 h-full w-[1px] bg-accent/25" />
+                    </div>
+
+                    {/* Hero Copy */}
+                    <div className="relative z-20 max-w-3xl mt-12">
+                      <span className="font-mono text-[10px] md:text-xs tracking-[0.45em] text-accent uppercase block mb-4">
+                        {details.subtitle}
+                      </span>
+                      <h1 className="font-display text-5xl md:text-8xl font-light italic tracking-normal text-foreground leading-[1.05]">
+                        {details.title}
+                      </h1>
+                      <p className="font-body text-xs md:text-base text-foreground/75 mt-8 leading-relaxed max-w-xl">
+                        {details.description}
+                      </p>
+                    </div>
+                  </section>
+
+                  {/* Services Section */}
+                  <section className="relative py-24 md:py-32 px-8 md:px-24 border-t border-accent/5 bg-[#030303]">
+                    {/* Header */}
+                    <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-6">
+                      <div>
+                        <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] text-accent uppercase">
+                          {details.gridTag}
+                        </span>
+                        <h2 className="font-display text-4xl md:text-6xl font-light italic tracking-wide text-foreground mt-3">
+                          {details.gridTitle}
+                        </h2>
+                      </div>
+                      <p className="font-body text-xs md:text-sm text-[#7c7c82] max-w-md leading-relaxed">
+                        {details.gridIntro}
+                      </p>
+                    </div>
+
+                    {/* Services Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                      {details.services.map((service, index) => {
+                        const num = String(index + 1).padStart(2, "0");
+                        return (
+                          <div
+                            key={index}
+                            className="group relative bg-[#0a0a0c]/40 border border-accent/10 p-8 md:p-10 rounded-[4px] overflow-hidden flex flex-col justify-between min-h-[220px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#121215]/70 hover:border-accent/40 hover:-translate-y-1.5 hover:shadow-[0_10px_30px_-15px_rgba(197,168,128,0.15)]"
+                          >
+                            {/* Micro focus corner brackets */}
+                            <div className="absolute top-4 left-4 w-1.5 h-1.5 border-t border-l border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
+                            <div className="absolute top-4 right-4 w-1.5 h-1.5 border-t border-r border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
+                            <div className="absolute bottom-4 left-4 w-1.5 h-1.5 border-b border-l border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
+                            <div className="absolute bottom-4 right-4 w-1.5 h-1.5 border-b border-r border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
+
+                            {/* Service Header Info */}
+                            <div className="flex justify-between items-start gap-4">
+                              <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-accent/80 group-hover:text-accent transition-colors duration-500 font-semibold">
+                                [{num}]
+                              </span>
+                              <span className="font-display font-extrabold text-7xl text-foreground/5 group-hover:text-accent/5 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] select-none absolute right-6 top-4 group-hover:-translate-y-1">
+                                {num}
+                              </span>
+                            </div>
+
+                            {/* Service Body content */}
+                            <div className="mt-8 relative z-10">
+                              <h3 className="font-display text-2xl md:text-3xl font-light text-[#eae6e1] group-hover:text-foreground transition-colors duration-500">
+                                {service.title}
+                              </h3>
+                              <p className="font-body text-xs md:text-sm text-foreground/60 mt-4 leading-relaxed group-hover:text-foreground/75 transition-colors duration-500">
+                                {service.description}
+                              </p>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </section>
+
+                  {/* MP Gallery Section */}
+                  {details.gallery && details.gallery.length > 0 && (
+                    <section 
+                      id="mp-gallery-section" 
+                      className="relative h-[250vh] w-full bg-[#030303] border-t border-accent/5"
+                    >
+                      <div className="sticky top-0 h-screen w-full flex flex-col lg:flex-row overflow-hidden">
+                        
+                        {/* Left Column: Pinned Copy */}
+                        <div className="w-full lg:w-1/2 h-[45vh] lg:h-full flex items-center justify-start px-8 md:px-20 relative bg-[#030303]">
+                          {/* Technical Grid Overlay */}
+                          <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]">
+                            <div className="absolute inset-0 border-r border-accent" style={{ left: '20%' }} />
+                            <div className="absolute inset-0 border-r border-accent" style={{ left: '50%' }} />
+                            <div className="absolute inset-0 border-r border-accent" style={{ left: '80%' }} />
+                          </div>
+
+                          <div className="relative z-10 w-full h-[280px]">
+                            {details.gallery.map((item, idx) => {
+                              const isActive = idx === galleryActiveIndex;
+                              return (
+                                <div
+                                  key={idx}
+                                  className={`absolute inset-0 flex flex-col justify-center transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                                    isActive 
+                                      ? "opacity-100 translate-y-0 pointer-events-auto" 
+                                      : "opacity-0 translate-y-8 pointer-events-none"
+                                  }`}
+                                >
+                                  <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] text-accent uppercase block mb-3">
+                                    [ PROJECT 0{idx + 1} / GALLERY ]
+                                  </span>
+                                  <h3 className="font-display text-4xl md:text-[5vw] font-light tracking-tight uppercase leading-[0.95] mb-3 text-[#eae6e1]">
+                                    {item.title}
+                                  </h3>
+                                  <span className="font-mono tracking-[0.2em] uppercase text-accent/80 text-[10px] md:text-xs block mb-5">
+                                    {item.tagline}
+                                  </span>
+                                  <p className="font-body text-xs md:text-sm text-foreground/60 leading-relaxed max-w-md">
+                                    {item.description}
+                                  </p>
+                                </div>
+                              );
+                            })}
+                          </div>
+
+                          {/* Gallery Bottom Metadata */}
+                          <div className="absolute bottom-10 left-8 md:left-20 z-10 font-mono text-[8px] md:text-[9px] text-[#7c7c82]/50 tracking-[0.25em] flex flex-col gap-1 text-left uppercase">
+                            <span>A GALLERY WORKSPACE EXPERIMENT</span>
+                            <span>CRAFTED WITH GSAP & LENIS RUNTIME</span>
+                          </div>
+                        </div>
+
+                        {/* Right Column: Moving 3D Parallax Image Column */}
+                        <div className="w-full lg:w-1/2 h-[55vh] lg:h-full relative overflow-hidden bg-[#050507] border-t lg:border-t-0 lg:border-l border-accent/5 flex items-center justify-center">
+                          <div className="relative w-full max-w-lg aspect-[4/3] h-full flex items-center justify-center">
+                            {details.gallery.map((item, i) => {
+                              const dist = i - galleryProgress * (details.gallery.length - 1);
+                              const absDist = Math.abs(dist);
+                              const translateY = dist * 45; // 45vh vertical spacing
+                              const scale = 1.05 - absDist * 0.15;
+                              const rotate = dist * -8; // rotate between -16deg and 16deg
+                              const blurVal = Math.min(8, absDist * 6);
+                              const opacity = 1 - Math.min(0.65, absDist * 0.45);
+                              const zIndex = Math.round(10 - absDist * 2);
+
+                              return (
+                                <div
+                                  key={i}
+                                  className="absolute w-[80%] md:w-[85%] aspect-[4/3] bg-cover bg-center rounded-[4px] border border-accent/15 shadow-[0_25px_50px_-12px_rgba(0,0,0,0.85)] transition-shadow duration-500 overflow-hidden"
+                                  style={{
+                                    backgroundImage: `url('${item.image}')`,
+                                    transform: `translateY(${translateY}vh) scale(${scale}) rotate(${rotate}deg)`,
+                                    filter: `blur(${blurVal}px)`,
+                                    opacity: opacity,
+                                    zIndex: zIndex,
+                                  }}
+                                >
+                                  {/* Subtle light flare overlay */}
+                                  <div className="absolute inset-0 bg-gradient-to-tr from-accent/5 via-transparent to-white/5 pointer-events-none" />
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+
+                      </div>
+                    </section>
+                  )}
+                </div>
+              );
+            })()}
+          </div>
         )}
       </div>
 
