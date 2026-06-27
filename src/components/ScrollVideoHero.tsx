@@ -42,139 +42,140 @@ const SERVICES_DATA = [
 const SERVICES_LIST = [
   {
     title: "Property Photography",
-    description: "High-quality interior and exterior photography for residential, commercial, and luxury properties.",
+    description: "Premium wide-angle and detail interior/exterior photography utilizing advanced bracketed exposures, high-end optical sensors, and architectural perspective correction to showcase luxury properties in their most pristine visual light.",
   },
   {
     title: "Real Estate Videography",
-    description: "Cinematic property walkthrough videos designed to showcase spaces and increase buyer engagement.",
+    description: "Custom-engineered walkthrough videos combining smooth motorized gimbal movements, dynamic lens shifts, and volumetric lighting tracks designed to create immersive virtual experiences for prospective buyers.",
   },
   {
     title: "Drone Photography & Videography",
-    description: "Aerial photography and cinematic drone footage highlighting location, scale, surroundings, and amenities.",
+    description: "FAA-certified aerial cinematography capturing majestic sweeping sweeps, property boundaries, and neighborhood accessibility profiles on ultra-high definition 4K camera sensors for complete spatial overview.",
   },
   {
     title: "Luxury Property Films",
-    description: "Premium storytelling videos for luxury villas, penthouses, resorts, and high-end developments.",
+    description: "Bespoke, cinematic storytelling productions featuring custom sound designs, emotional lifestyle scripts, and elite color grades tailored exclusively for high-end luxury villas, penthouses, and landmark resorts.",
   },
   {
     title: "Builder & Developer Project Shoots",
-    description: "Marketing visuals for ongoing and completed residential and commercial projects.",
+    description: "High-impact marketing assets for developers, highlighting structural engineering scale, premium raw materials, and completed phases to build market authority and drive early off-plan sales.",
   },
   {
     title: "Architectural Photography",
-    description: "Professional photography focusing on design, materials, lighting, and architectural details.",
+    description: "Fine-art photography focusing on design details, dynamic shadow geometry, material textures, and natural lighting shifts, tailored for elite architects, structural engineers, and design catalogs.",
   },
   {
     title: "Interior Photography",
-    description: "Showcasing interiors, furnishings, decor, and spatial aesthetics for designers and developers.",
+    description: "Curated interior captures highlighting spatial layout, custom furniture details, textures, and lighting design, crafted specifically to elevate portfolios for designers and luxury staging firms.",
   },
   {
     title: "Property Marketing Reels",
-    description: "Short-form Instagram, Facebook, and YouTube reels optimized for social media marketing.",
+    description: "High-conversion, fast-paced vertical video reels (9:16) optimized with trending pacing and text layouts, engineered to maximize engagement, virality, and lead acquisition on social media channels.",
   },
   {
     title: "Virtual Property Tours",
-    description: "Immersive walkthrough experiences allowing potential buyers to explore remotely.",
+    description: "High-resolution 3D virtual walkthroughs mapping spatial flows and architectural layouts, allowing prospective international buyers to inspect every corner of the property remotely.",
   },
   {
     title: "Construction Progress Documentation",
-    description: "Periodic photography and videography to track project development milestones.",
+    description: "Periodic, chronologically structured high-definition photography and drone tracking reports designed to document construction milestones for investors, stakeholders, and regulatory agencies.",
   },
   {
     title: "360° Virtual Tours",
-    description: "Interactive virtual walkthroughs that allow viewers to explore properties remotely from any device.",
+    description: "Seamless, interactive 360-degree virtual space models equipped with hot-spot labels and detailed maps, offering immersive digital inspection of premium properties from any device.",
   },
 ];
 
 const COMMERCIAL_SERVICES = [
   {
     title: "Brand Storytelling Films",
-    description: "Premium cinematic narratives that capture your company's heritage, core values, and vision to build deep audience connection.",
+    description: "High-concept cinematic brand profiles detailing your company's heritage, cultural values, and creative philosophy, engineered to forge a strong emotional connection with global audiences.",
   },
   {
     title: "Product Launch Videos",
-    description: "High-impact, visually arresting product reveals featuring volumetric lighting and sleek macro shots to maximize engagement.",
+    description: "Visually arresting product reveals utilizing high-speed macro cinematography, volumetric light designs, and custom CGI integration to generate maximum market hype and customer engagement.",
   },
   {
     title: "Social Media Campaigns",
-    description: "Short-form vertical video assets (Instagram Reels, TikTok, YouTube Shorts) designed for viral reach and audience retention.",
+    description: "A collection of short-form, high-retention video assets (Reels, TikToks, Shorts) designed around target demographics to maximize viewer retention, sharing frequency, and direct conversion rates.",
   },
   {
     title: "TV & Broadcast Commercials",
-    description: "Full-scale television commercial production adhering to broadcast compliance standards, optimized for high conversion rates.",
+    description: "Full-scale commercial productions meeting rigorous network standards, featuring professional casting, art direction, and post-production optimization to capture broad television and digital audiences.",
   },
   {
     title: "Corporate Event Cinematography",
-    description: "Multi-camera documentation of keynote sessions, conferences, summits, panel discussions, and corporate galas.",
+    description: "Comprehensive multi-camera coverage capturing the energy, keynotes, and human interactions of corporate summits, panel sessions, and galas, delivered in highly polished event recap films.",
   },
   {
     title: "Testimonial & Case Study Videos",
-    description: "Authentic interview-driven client success stories highlighting product utility and building verified market trust.",
+    description: "Authentic, interview-driven customer success narratives capturing verified metrics and human satisfaction to establish absolute market authority and trust for enterprise products.",
   },
   {
     title: "Company Culture & Recruitment",
-    description: "Dynamic behind-the-scenes glimpses into daily operations, team synergy, and leadership vision to attract elite talent.",
+    description: "Behind-the-scenes profiles of daily workflows, team collaborations, and executive visions, designed to showcase an inspiring work environment and attract elite global talent.",
   },
   {
     title: "Aerial & Drone Videography",
-    description: "FAA-certified, high-resolution aerial cinematography for factory tours, corporate headquarters, and site developments.",
+    description: "Licensed, safe, and dynamic aerial drone filming capturing factory complexes, corporate headquarters, and site developments from dramatic, high-angle cinematic vantage points.",
   },
   {
     title: "Animated Explainer Videos",
-    description: "Custom motion graphics, character animations, and typography overlays to explain complex software, products, or workflows.",
+    description: "Custom motion graphic sequences, clean vector animations, and voiceover designs that simplify complex product features, app workflows, or technical architectures for easy understanding.",
   },
   {
     title: "Behind-the-Scenes (BTS) Content",
-    description: "Intimate and engaging production logs highlighting the scale, effort, and creative details of large campaigns.",
+    description: "Engaging documentary logs detailing the scale, effort, and creative milestones of your marketing campaigns, adding human relatability and brand transparency.",
   },
 ];
 
 const WEDDING_SERVICES = [
   {
     title: "Cinematic Highlight Film",
-    description: "An artistically edited, emotionally resonant summary film of your wedding day, set to custom licensed soundtracks.",
+    description: "A masterfully edited, non-linear cinematic story of your wedding day, set to custom licensed soundtracks that weave together emotional vows, laughter, and premium visual compositions.",
   },
   {
     title: "Full-Feature Documentary Film",
-    description: "Comprehensive chronological coverage of the entire day—including full ceremony, complete speeches, and reception events.",
+    description: "A comprehensive, chronologically polished archive of your entire celebration, preserving full multi-camera records of the ceremony, toasts, first dances, and reception moments in pristine clarity.",
   },
   {
     title: "Pre-Wedding Cinematic Shoot",
-    description: "Intimate, styled couple sessions capturing your love story in unique, cinematic locations before the wedding day.",
+    description: "A relaxed, fashion-forward couple profile shot in high-end scenic locations, designed to capture your unique chemistry and relationship story prior to the main wedding celebrations.",
   },
   {
     title: "Aerial Drone Cinematography",
-    description: "Breathtaking 4K drone footage highlighting the grandeur of your wedding venue, landscaping, and outdoor ceremonies.",
+    description: "Majestic 4K aerial compositions highlighting the layout, scale, and natural landscaping of your wedding venue, providing a grand context to your digital heirloom.",
   },
   {
     title: "Multi-Day Event Coverage",
-    description: "Extended cinematography teams documenting rehearsal dinners, welcome parties, morning activities, and post-wedding brunches.",
+    description: "Dedicated production crews documenting welcome dinners, wedding preparations, traditional rituals, morning brunches, and post-celebration parties to capture the full story of your guests.",
   },
   {
     title: "Same-Day Edit (SDE) Film",
-    description: "A fast-turnaround mini-film produced and edited on-site, screened to your guests during the reception dinner.",
+    description: "A high-speed editing feat where highlights from the morning prep and ceremony are woven into a cinematic teaser and screened live to your guests during the reception dinner.",
   },
   {
     title: "Destination Wedding Cinematography",
-    description: "International travel-ready production crew equipped for remote venue setups, lighting shifts, and outdoor conditions.",
+    description: "Travel-ready, expert production crews equipped with specialized gear setups to document luxury unions in remote locations, varying climates, and historic venues globally.",
   },
   {
     title: "High-Fidelity Audio Vows Capture",
-    description: "Multi-source lapel microphone systems capturing pristine audio of whispered vows, letters, and family speeches.",
+    description: "Pristine multi-source sound engineering utilizing discrete wireless lapel microphones and soundboard lines to capture clear whispers of vows, letter readings, and family speeches.",
   },
   {
     title: "Bridal Portraits & Preparations",
-    description: "Intimate, macro shots documenting dress details, jewelry, prep sessions, and emotional moments before the walk down the aisle.",
+    description: "Intimate, macro-focused portrait capture highlighting dress textures, accessory details, emotional first-looks, and candid preparation moments before walking down the aisle.",
   },
   {
     title: "Anniversary & Legacy Vows Renewal",
-    description: "Cinematic renewal shoots documenting long-term unions, family achievements, and anniversary vow statements.",
+    description: "Cinematic tribute packages documenting legacy vows, long-term family unions, and renewal celebrations, designed to preserve visual history for future generations.",
   },
 ];
 
 const CARD_DETAILS = [
   {
     heroImage: "/images/real_estate_hero.png",
+    trustBadge: "Cinematic Quality Assured • 5★ Rated Agency",
     subtitle: "Architectural Spaces, Elevated",
     title: (
       <>
@@ -211,6 +212,7 @@ const CARD_DETAILS = [
   },
   {
     heroImage: "/images/commercial_films.png",
+    trustBadge: "Premium Brand Production • Award-Winning Quality",
     subtitle: "Visual Narratives, Engineered",
     title: (
       <>
@@ -247,6 +249,7 @@ const CARD_DETAILS = [
   },
   {
     heroImage: "/images/wedding_films.png",
+    trustBadge: "Intimate Storytelling • 100% High-Fidelity Legacy",
     subtitle: "Candid Moments, Preserved",
     title: (
       <>
@@ -336,6 +339,13 @@ export default function ScrollVideoHero() {
   const [transitionPath, setTransitionPath] = useState<string>("");
   const [loadReelImages, setLoadReelImages] = useState(false);
   const [startPos, setStartPos] = useState({ startLeft: 0, startRight: 0 });
+  const [showAllServices, setShowAllServices] = useState(false);
+  const [showAllServicesView, setShowAllServicesView] = useState(false);
+  const [homepageScrollProgress, setHomepageScrollProgress] = useState(0);
+  const [detailScrollProgress, setDetailScrollProgress] = useState(0);
+  const [transitionFinished, setTransitionFinished] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const localLenisRef = useRef<Lenis | null>(null);
   const isTransitioningRef = useRef(false);
   const overlayRef = useRef<HTMLDivElement>(null);
   const detailScrollRef = useRef<HTMLDivElement>(null);
@@ -352,6 +362,20 @@ export default function ScrollVideoHero() {
   useEffect(() => {
     activeCardRef.current = activeCard;
   }, [activeCard]);
+
+  // Synchronized navbar entrance animation
+  useEffect(() => {
+    if (activeCard !== null && transitionFinished && imageLoaded) {
+      gsap.killTweensOf(".global-navbar");
+      gsap.fromTo(".global-navbar",
+        { opacity: 0, y: -20, pointerEvents: "none" },
+        { opacity: 1, y: 0, pointerEvents: "auto", duration: 0.8, ease: "power4.out" }
+      );
+    } else {
+      gsap.killTweensOf(".global-navbar");
+      gsap.set(".global-navbar", { opacity: 0, y: -20, pointerEvents: "none" });
+    }
+  }, [activeCard, transitionFinished, imageLoaded]);
 
 
   // Track mouse coordinates globally to detect hover target when closing details
@@ -738,6 +762,7 @@ export default function ScrollVideoHero() {
         pin: true,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
+          setHomepageScrollProgress(self.progress);
           if (self.progress >= 0.95) {
             revealTimeline.play();
           } else {
@@ -938,6 +963,30 @@ export default function ScrollVideoHero() {
       globalWindow.lenis.stop();
     }
 
+    setShowAllServices(false);
+    setShowAllServicesView(false);
+    setDetailScrollProgress(0);
+    setTransitionFinished(false);
+    setImageLoaded(false);
+
+    // Preload hero image for detail screen
+    const cardDetailsObj = CARD_DETAILS[index];
+    if (cardDetailsObj && cardDetailsObj.heroImage) {
+      const img = new Image();
+      img.src = cardDetailsObj.heroImage;
+      const checkImgComplete = () => {
+        if (img.complete) {
+          setImageLoaded(true);
+        } else {
+          img.onload = () => setImageLoaded(true);
+          img.onerror = () => setImageLoaded(true);
+        }
+      };
+      checkImgComplete();
+    } else {
+      setImageLoaded(true);
+    }
+
     setActiveCard(index);
     transitionProgress.current = { x: 0, bulge: 0 };
 
@@ -1003,6 +1052,7 @@ export default function ScrollVideoHero() {
         setTransitionPath(finalPath);
 
         isTransitioningRef.current = false;
+        setTransitionFinished(true);
         gsap.to(".service-detail-content", {
           opacity: 1,
           duration: 0.5,
@@ -1080,8 +1130,28 @@ export default function ScrollVideoHero() {
     );
   };
 
+  const scrollToSection = (id: string) => {
+    if (localLenisRef.current) {
+      localLenisRef.current.scrollTo(id, {
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      });
+    } else {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
   const handleCloseDetail = () => {
     if (isTransitioningRef.current || activeCard === null) return;
+    setShowAllServices(false);
+    setShowAllServicesView(false);
+    setDetailScrollProgress(0);
+    setTransitionFinished(false);
+    setImageLoaded(false);
+    gsap.to(".global-navbar", { opacity: 0, y: -20, duration: 0.3, ease: "power2.in" });
     isTransitioningRef.current = true;
 
     const W = window.innerWidth;
@@ -1272,6 +1342,7 @@ export default function ScrollVideoHero() {
       smoothWheel: true,
       wheelMultiplier: 1.0,
     });
+    localLenisRef.current = localLenis;
 
     let rafId: number;
     const tick = (time: number) => {
@@ -1281,8 +1352,17 @@ export default function ScrollVideoHero() {
     rafId = requestAnimationFrame(tick);
 
     let snapTimeout: any;
-    // Dynamic scroll tracking for the gallery inside overlay
-    const handleScroll = () => {
+    // Dynamic scroll tracking inside details overlay
+    const handleScroll = (e: any) => {
+      if (e && typeof e.progress === "number") {
+        setDetailScrollProgress(e.progress);
+      } else {
+        const scrollHeight = el.scrollHeight - el.clientHeight;
+        if (scrollHeight > 0) {
+          setDetailScrollProgress(el.scrollTop / scrollHeight);
+        }
+      }
+
       const section = el.querySelector("#mp-gallery-section") as HTMLElement;
       if (!section) return;
 
@@ -1338,6 +1418,7 @@ export default function ScrollVideoHero() {
       clearTimeout(snapTimeout);
       localLenis.off("scroll", handleScroll);
       localLenis.destroy();
+      localLenisRef.current = null;
       el.removeEventListener("wheel", stopScrollPropagation);
       el.removeEventListener("touchstart", stopScrollPropagation);
       el.removeEventListener("touchmove", stopScrollPropagation);
@@ -1349,6 +1430,121 @@ export default function ScrollVideoHero() {
       ref={triggerRef}
       className="relative w-screen h-screen bg-background overflow-hidden"
     >
+      {/* Global Redesigned Capsule Navigation Bar */}
+      <div 
+        style={{ zIndex: 60 }}
+        className="fixed top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl global-navbar opacity-0 pointer-events-none"
+      >
+        <nav 
+          className="w-full bg-[#050507]/60 backdrop-blur-xl border border-white/10 rounded-full py-3 px-6 md:px-10 flex items-center justify-between shadow-[0_20px_50px_rgba(0,0,0,0.8)] relative pointer-events-auto transition-all duration-500 hover:border-accent/30 hover:shadow-[0_20px_50px_rgba(197,168,128,0.05)]"
+        >
+          {/* Logo */}
+          <div 
+            onClick={() => {
+              if (showAllServicesView) {
+                setShowAllServicesView(false);
+                setTimeout(() => scrollToSection("hero-section"), 50);
+              } else {
+                scrollToSection("hero-section");
+              }
+            }}
+            className="font-display tracking-[0.25em] font-light text-foreground text-xs md:text-sm uppercase cursor-pointer hover:text-accent transition-colors"
+          >
+            JJ FILMS
+          </div>
+          
+          {/* Center Navigation Links */}
+          <div className="hidden md:flex items-center gap-6 font-mono text-[9px] tracking-[0.25em] uppercase text-foreground/50">
+            <button
+              onClick={() => {
+                if (showAllServicesView) {
+                  setShowAllServicesView(false);
+                  setTimeout(() => scrollToSection("hero-section"), 50);
+                } else {
+                  scrollToSection("hero-section");
+                }
+              }}
+              className="hover:text-accent transition-colors cursor-pointer border-none bg-transparent outline-none p-0 relative group"
+            >
+              Overview
+              <span className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-1 h-1 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </button>
+            <span className="text-white/10 font-light select-none">/</span>
+            <button
+              onClick={() => {
+                if (showAllServicesView) {
+                  setShowAllServicesView(false);
+                  setTimeout(() => scrollToSection("services-section"), 50);
+                } else {
+                  scrollToSection("services-section");
+                }
+              }}
+              className="hover:text-accent transition-colors cursor-pointer border-none bg-transparent outline-none p-0 relative group"
+            >
+              Services
+              <span className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-1 h-1 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </button>
+            {activeCard !== null && CARD_DETAILS[activeCard]?.gallery && CARD_DETAILS[activeCard].gallery.length > 0 && (
+              <>
+                <span className="text-white/10 font-light select-none">/</span>
+                <button
+                  onClick={() => {
+                    if (showAllServicesView) {
+                      setShowAllServicesView(false);
+                      setTimeout(() => scrollToSection("mp-gallery-section"), 50);
+                    } else {
+                      scrollToSection("mp-gallery-section");
+                    }
+                  }}
+                  className="hover:text-accent transition-colors cursor-pointer border-none bg-transparent outline-none p-0 relative group"
+                >
+                  Gallery
+                  <span className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-1 h-1 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </button>
+              </>
+            )}
+          </div>
+          
+          {/* CTA & Close Button */}
+          <div className="flex items-center gap-4 md:gap-6">
+            <button
+              onClick={() => {
+                if (showAllServicesView) {
+                  setShowAllServicesView(false);
+                  setTimeout(() => scrollToSection("details-contact"), 50);
+                } else {
+                  scrollToSection("details-contact");
+                }
+              }}
+              className="inline-flex items-center justify-center font-mono text-[8px] md:text-[9px] tracking-[0.2em] uppercase bg-accent text-background hover:bg-white hover:text-background px-5 py-2 rounded-full transition-all duration-300 font-semibold shadow-[0_4px_12px_rgba(197,168,128,0.25)] cursor-pointer border-none outline-none"
+            >
+              Book Consultation
+            </button>
+            <span className="text-white/10 hidden sm:inline select-none">|</span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleCloseDetail();
+              }}
+              className="group inline-flex items-center gap-1.5 font-mono text-[8px] md:text-[9px] tracking-[0.15em] uppercase text-foreground/50 hover:text-accent transition-colors duration-300 cursor-pointer border-none bg-transparent outline-none p-0"
+            >
+              <span className="font-sans text-[11px] leading-none transition-transform duration-500 group-hover:rotate-90">
+                ✕
+              </span>
+              <span className="hidden sm:inline">Close</span>
+            </button>
+          </div>
+
+          {/* Scroll progress running along the bottom border of the capsule */}
+          <div className="absolute bottom-0 left-6 right-6 h-[1.5px] bg-white/5 overflow-hidden rounded-full">
+            <div 
+              className="h-full bg-accent" 
+              style={{ width: `${detailScrollProgress * 100}%` }}
+            />
+          </div>
+        </nav>
+      </div>
+
       {/* Global Scroll Clip Path SVG */}
       <svg className="absolute inset-0 w-0 h-0 pointer-events-none">
         <defs>
@@ -1432,7 +1628,7 @@ export default function ScrollVideoHero() {
             </div>
 
             {/* Top Metadata Row */}
-            <div className="absolute top-12 left-12 flex flex-col gap-1 pointer-events-none select-none font-mono text-[9px] md:text-[10px] text-foreground/40 tracking-[0.25em]">
+            <div className="absolute top-24 left-12 flex flex-col gap-1 pointer-events-none select-none font-mono text-[9px] md:text-[10px] text-foreground/40 tracking-[0.25em]">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
                 <span className="text-foreground/80 font-bold">REC</span>
@@ -1442,7 +1638,7 @@ export default function ScrollVideoHero() {
               <div>PROGRESS // FPS 24</div>
             </div>
 
-            <div className="absolute top-12 right-12 flex flex-col items-end gap-1 pointer-events-none select-none font-mono text-[9px] md:text-[10px] text-foreground/40 tracking-[0.25em]">
+            <div className="absolute top-24 right-12 flex flex-col items-end gap-1 pointer-events-none select-none font-mono text-[9px] md:text-[10px] text-foreground/40 tracking-[0.25em]">
               <div className="text-foreground/80 font-bold">
                 TC 00:00:
                 {Math.floor(loadedCount / 24)
@@ -1662,6 +1858,13 @@ export default function ScrollVideoHero() {
               <p className="font-display italic text-[#7c7c82] mt-4 text-xs md:text-sm leading-relaxed max-w-xs whitespace-pre-line">
                 {service.shortDescription}
               </p>
+              {/* Visual Card CTA */}
+              <div className="mt-8 overflow-hidden">
+                <span className="inline-flex items-center gap-2 font-mono text-[9px] tracking-[0.3em] uppercase text-accent group-hover:text-white transition-colors duration-500 font-semibold">
+                  EXPLORE ARCHIVE 
+                  <span className="transform translate-x-0 group-hover:translate-x-1.5 transition-transform duration-500">→</span>
+                </span>
+              </div>
             </div>
           </div>
           );
@@ -1720,22 +1923,6 @@ export default function ScrollVideoHero() {
             data-lenis-prevent
             className="service-detail-content absolute inset-0 z-10 opacity-0 overflow-y-auto h-screen w-screen pointer-events-auto cursor-pointer"
           >
-            {/* Floating Top Navigation Row (Back Button) */}
-            <nav className="fixed top-8 left-8 md:top-12 md:left-16 z-40">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleCloseDetail();
-                }}
-                className="group inline-flex items-center gap-3.5 font-mono text-[9px] md:text-[10px] tracking-[0.3em] uppercase text-foreground/60 transition-colors duration-500 hover:text-accent w-fit cursor-pointer border-none bg-transparent outline-none p-0"
-              >
-                <span className="inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2">
-                  ←
-                </span>
-                <span>Back to Cinema</span>
-              </button>
-            </nav>
-
             {(() => {
               const details = CARD_DETAILS[activeCard];
               if (!details) return null;
@@ -1745,40 +1932,222 @@ export default function ScrollVideoHero() {
                   onClick={(e) => e.stopPropagation()}
                   className="service-detail-content-inner w-full min-h-screen text-left cursor-default select-text bg-[#030303]"
                 >
-                  {/* Hero Section */}
-                  <section
-                    className="relative h-[80vh] md:h-[90vh] flex items-center justify-start px-8 md:px-24 bg-cover bg-center overflow-hidden"
-                    style={{
-                      backgroundImage: `url('${details.heroImage}')`,
-                    }}
-                  >
-                    {/* Cinematic Vignette/Dark Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/30 z-10 pointer-events-none" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-black/40 z-10 pointer-events-none" />
-                    
-                    {/* Dynamic backdrop grid lines for high-end look */}
-                    <div className="absolute inset-0 z-15 pointer-events-none opacity-20">
-                      <div className="absolute top-1/2 left-0 w-full h-[1px] bg-accent/25" />
-                      <div className="absolute top-0 left-1/4 h-full w-[1px] bg-accent/25" />
-                      <div className="absolute top-0 left-3/4 h-full w-[1px] bg-accent/25" />
-                    </div>
+                  {showAllServicesView ? (
+                    /* Redesigned All Services Page Layout */
+                    <div className="w-full min-h-screen pt-32 pb-24 px-8 md:px-24 bg-[#030303] animate-fade-in relative">
+                      {/* Technical visual elements for luxury studio look */}
+                      <div className="absolute inset-0 z-0 pointer-events-none opacity-5">
+                        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-accent/20 via-transparent to-transparent" />
+                        <div className="absolute top-1/2 left-0 w-full h-[1px] bg-accent/20" />
+                        <div className="absolute top-0 left-1/4 h-full w-[1px] bg-accent/20" />
+                        <div className="absolute top-0 left-3/4 h-full w-[1px] bg-accent/20" />
+                      </div>
 
-                    {/* Hero Copy */}
-                    <div className="relative z-20 max-w-3xl mt-12">
-                      <span className="font-mono text-[10px] md:text-xs tracking-[0.45em] text-accent uppercase block mb-4">
+                      <div className="max-w-7xl mx-auto relative z-10">
+                        {/* Back button at the top */}
+                        <div className="mb-16">
+                          <button
+                            onClick={() => {
+                              setShowAllServicesView(false);
+                              if (detailScrollRef.current) {
+                                detailScrollRef.current.scrollTop = 0;
+                              }
+                              if (localLenisRef.current) {
+                                localLenisRef.current.scrollTo(0, { immediate: true });
+                              }
+                            }}
+                            className="group inline-flex items-center gap-2.5 font-mono text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-accent/70 hover:text-accent transition-colors duration-300 cursor-pointer border-none bg-transparent outline-none p-0"
+                          >
+                            <span className="inline-block transition-transform duration-300 group-hover:-translate-x-1">
+                              ←
+                            </span>
+                            <span>Back to Overview</span>
+                          </button>
+                        </div>
+
+                        {/* Header */}
+                        <div className="mb-20 md:mb-32">
+                          <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] text-accent uppercase">
+                            {details.gridTag} Portfolio
+                          </span>
+                          <h1 className="font-display text-4xl md:text-7xl font-light italic tracking-wide text-foreground mt-4">
+                            All Service Offerings
+                          </h1>
+                          <p className="font-body text-xs md:text-sm text-[#7c7c82] max-w-xl leading-relaxed mt-6">
+                            A complete breakdown of our high-fidelity production services, cinematic strategies, and specialized media craft.
+                          </p>
+                          <p className="font-body text-xs md:text-sm text-[#7c7c82]/70 max-w-3xl leading-relaxed mt-4">
+                            Every service is executed with a relentless pursuit of creative prestige and technical precision. We deploy advanced cinematography packages, tailored grading, and specialized director treatments to capture properties and narratives in their most premium light, ensuring every detail reflects absolute architectural and emotional resonance.
+                          </p>
+                          <div className="h-[1px] bg-accent/15 w-full mt-10" />
+                        </div>
+
+                        {/* Services List (Detailed alternate layout) */}
+                        <div className="flex flex-col gap-24 md:gap-36">
+                          {details.services.map((service, index) => {
+                            const isEven = index % 2 === 0;
+                            const num = String(index + 1).padStart(2, "0");
+                            return (
+                              <div 
+                                key={index}
+                                className={`flex flex-col ${isEven ? "md:flex-row" : "md:flex-row-reverse"} gap-12 md:gap-20 items-center`}
+                              >
+                                {/* Left/Right Text Column */}
+                                <div className="w-full md:w-1/2 flex flex-col gap-6">
+                                  <div className="flex items-center gap-4">
+                                    <span className="font-mono text-[10px] tracking-[0.25em] text-accent font-bold">
+                                      [{num}]
+                                    </span>
+                                    <div className="h-[1px] bg-accent/25 w-12" />
+                                  </div>
+                                  <h3 className="font-display text-3xl md:text-4xl font-light text-[#eae6e1]">
+                                    {service.title}
+                                  </h3>
+                                  <p className="font-body text-sm md:text-base text-foreground/60 leading-relaxed">
+                                    {service.description}
+                                  </p>
+                                  {/* Elaborated technical specifications bullet points */}
+                                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 font-mono text-[9px] tracking-[0.1em] text-foreground/45 uppercase border-t border-white/5 pt-6">
+                                    <div className="flex items-center gap-2">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                                      <span>Advanced Equipment</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                                      <span>4K RAW Mastering</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                                      <span>Bespoke Color Grade</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                      <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                                      <span>Unlimited Usage Rights</span>
+                                    </div>
+                                  </div>
+                                </div>
+
+                                {/* Decorative Visual Canvas Block */}
+                                <div className="w-full md:w-1/2 h-[200px] md:h-[300px] bg-[#09090b] border border-accent/15 rounded-[4px] relative overflow-hidden flex items-center justify-center group shadow-2xl">
+                                  {/* Glassmorphic lighting gradient overlay */}
+                                  <div className="absolute inset-0 bg-gradient-to-tr from-accent/[0.04] via-transparent to-accent/[0.04] opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
+                                  
+                                  {/* Technical view lines */}
+                                  <div className="absolute inset-4 border border-white/[0.02] pointer-events-none">
+                                    <div className="absolute top-0 bottom-0 left-1/3 border-l border-dashed border-white/[0.015]" />
+                                    <div className="absolute top-0 bottom-0 right-1/3 border-l border-dashed border-white/[0.015]" />
+                                    <div className="absolute left-0 right-0 top-1/3 border-t border-dashed border-white/[0.015]" />
+                                    <div className="absolute left-0 right-0 bottom-1/3 border-t border-dashed border-white/[0.015]" />
+                                  </div>
+
+                                  <div className="absolute top-3 left-4 font-mono text-[7px] text-white/25 uppercase tracking-widest">
+                                    Capture Mode // RAW
+                                  </div>
+                                  <div className="absolute bottom-3 right-4 font-mono text-[7px] text-white/25 uppercase tracking-widest">
+                                    ISO 800 // 24FPS
+                                  </div>
+
+                                  <span className="font-mono text-[9px] tracking-[0.4em] text-foreground/15 uppercase select-none group-hover:text-accent/30 group-hover:scale-105 transition-all duration-1000">
+                                    JJ FILMS // {num}
+                                  </span>
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                    </div>
+                  ) : (
+                    <>
+                      {/* ── Hero Section — Two-Column Editorial Split ── */}
+                      {/*   Left: solid dark text panel  |  Right: pure image, zero overlay  */}
+                      <section
+                    id="hero-section"
+                    className="relative h-screen flex overflow-hidden"
+                  >
+                    {/* ── LEFT: Text Panel ── */}
+                    <div className="relative flex-shrink-0 w-[38%] min-w-[320px] bg-[#030303] flex flex-col justify-center px-10 md:px-16 xl:px-20 pt-24 pb-12 z-20">
+                      {/* Left accent border */}
+                      <div
+                        className="absolute right-0 top-0 bottom-0 w-[3px]"
+                        style={{
+                          background:
+                            'linear-gradient(to bottom, transparent 5%, rgba(197,168,128,0.35) 25%, rgba(197,168,128,0.35) 75%, transparent 95%)',
+                        }}
+                      />
+
+                      {/* Top corner mark */}
+                      <div className="absolute top-24 left-10 md:left-16 xl:left-20 font-mono text-[8px] tracking-[0.3em] text-foreground/15 uppercase select-none">
+                        JJ FILMS // {details.gridTag.split(' ')[0]}
+                      </div>
+
+                      {/* Trust badge */}
+                      {details.trustBadge && (
+                        <div className="inline-flex items-center gap-2 bg-accent/10 border border-accent/20 px-3.5 py-1.5 rounded-full mb-8 self-start animate-fade-in">
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                          <span className="font-mono text-[9px] tracking-[0.25em] text-accent uppercase font-medium">
+                            {details.trustBadge}
+                          </span>
+                        </div>
+                      )}
+
+                      {/* Subtitle */}
+                      <span className="font-mono text-[9px] md:text-[10px] tracking-[0.45em] text-accent/75 uppercase block mb-5">
                         {details.subtitle}
                       </span>
-                      <h1 className="font-display text-5xl md:text-8xl font-light italic tracking-normal text-foreground leading-[1.05]">
+
+                      {/* Gold rule */}
+                      <div className="w-10 h-[1px] bg-accent/40 mb-8" />
+
+                      {/* Main title */}
+                      <h1 className="font-display text-4xl md:text-5xl xl:text-[3.6rem] font-light italic tracking-normal text-[#eae6e1] leading-[1.08] mb-8">
                         {details.title}
                       </h1>
-                      <p className="font-body text-xs md:text-base text-foreground/75 mt-8 leading-relaxed max-w-xl">
+
+                      {/* Description */}
+                      <p className="font-body text-[13px] text-[#eae6e1]/52 leading-relaxed mb-10">
                         {details.description}
                       </p>
+
+                      {/* Horizontal divider */}
+                      <div className="w-full h-[1px] bg-white/5 mb-8" />
+
+                      {/* Bottom meta row */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-8 h-[1px] bg-accent/25" />
+                          <span className="font-mono text-[8px] tracking-[0.35em] uppercase text-foreground/28">Scroll to explore</span>
+                        </div>
+                        <span className="font-mono text-[8px] tracking-[0.2em] text-foreground/15 select-none">01 / 03</span>
+                      </div>
+                    </div>
+
+                    {/* ── RIGHT: Pure image — zero overlay ── */}
+                    <div className="relative flex-1 overflow-hidden">
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          backgroundImage: `url('${details.heroImage}')`,
+                          backgroundSize: 'cover',
+                          backgroundPosition: 'center',
+                        }}
+                      />
+                      {/* Feather-soft left-edge seam — prevents a harsh cut, not a darkening overlay */}
+                      <div
+                        className="absolute inset-y-0 left-0 w-14 pointer-events-none"
+                        style={{ background: 'linear-gradient(to right, #030303, transparent)' }}
+                      />
+                      {/* Narrow navbar top scrim — only on this panel to keep nav readable */}
+                      <div
+                        className="absolute inset-x-0 top-0 h-24 pointer-events-none"
+                        style={{ background: 'linear-gradient(to bottom, rgba(3,3,3,0.45), transparent)' }}
+                      />
                     </div>
                   </section>
 
                   {/* Services Section */}
-                  <section className="relative py-24 md:py-32 px-8 md:px-24 border-t border-accent/5 bg-[#030303]">
+                  <section id="services-section" className="relative py-24 md:py-32 px-8 md:px-24 border-t border-accent/5 bg-[#030303]">
                     {/* Header */}
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-6">
                       <div>
@@ -1789,19 +2158,40 @@ export default function ScrollVideoHero() {
                           {details.gridTitle}
                         </h2>
                       </div>
-                      <p className="font-body text-xs md:text-sm text-[#7c7c82] max-w-md leading-relaxed">
-                        {details.gridIntro}
-                      </p>
+                      <div className="flex flex-col items-start md:items-end gap-6">
+                        <p className="font-body text-xs md:text-sm text-[#7c7c82] max-w-md leading-relaxed md:text-right">
+                          {details.gridIntro}
+                        </p>
+                        {details.services.length > 3 && (
+                          <button
+                            onClick={() => {
+                              setShowAllServicesView(true);
+                              if (detailScrollRef.current) {
+                                detailScrollRef.current.scrollTop = 0;
+                              }
+                              if (localLenisRef.current) {
+                                localLenisRef.current.scrollTo(0, { immediate: true });
+                              }
+                            }}
+                            className="group inline-flex items-center gap-2.5 font-mono text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-accent border border-accent/20 hover:border-accent bg-transparent px-6 py-2.5 rounded-[2px] transition-all duration-500 hover:bg-accent/5 hover:tracking-[0.3em] cursor-pointer outline-none"
+                          >
+                            <span>View More</span>
+                            <span className="inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
+                              →
+                            </span>
+                          </button>
+                        )}
+                      </div>
                     </div>
 
                     {/* Services Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-                      {details.services.map((service, index) => {
+                      {(showAllServices ? details.services : details.services.slice(0, 3)).map((service, index) => {
                         const num = String(index + 1).padStart(2, "0");
                         return (
                           <div
                             key={index}
-                            className="group relative bg-[#0a0a0c]/40 border border-accent/10 p-8 md:p-10 rounded-[4px] overflow-hidden flex flex-col justify-between min-h-[220px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#121215]/70 hover:border-accent/40 hover:-translate-y-1.5 hover:shadow-[0_10px_30px_-15px_rgba(197,168,128,0.15)]"
+                            className="group relative bg-[#0a0a0c]/40 border border-accent/10 p-8 md:p-10 rounded-[4px] overflow-hidden flex flex-col justify-between min-h-[220px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#121215]/70 hover:border-accent/40 hover:-translate-y-1.5 hover:shadow-[0_10px_30px_-15px_rgba(197,168,128,0.15)] animate-fade-in"
                           >
                             {/* Micro focus corner brackets */}
                             <div className="absolute top-4 left-4 w-1.5 h-1.5 border-t border-l border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
@@ -1832,6 +2222,7 @@ export default function ScrollVideoHero() {
                         );
                       })}
                     </div>
+
                   </section>
 
                   {/* MP Gallery Section */}
@@ -1923,6 +2314,303 @@ export default function ScrollVideoHero() {
                       </div>
                     </section>
                   )}
+                </>
+              )}
+
+              {/* "Contact Us" Section */}
+              {activeCard !== null && (
+                <section
+                  id="details-contact"
+                  className="relative bg-[#050507] border-t border-white/5 py-24 md:py-32 px-8 md:px-24 overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#030303]/40 pointer-events-none" />
+                  
+                  {/* Subtle ambient light */}
+                  <div className="absolute top-1/3 left-1/4 w-[300px] h-[300px] bg-accent/3 blur-[100px] pointer-events-none select-none" />
+
+                  <div className="max-w-7xl mx-auto relative z-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24">
+                      
+                      {/* Left: Contact Info & Narratives */}
+                      <div className="lg:col-span-5 flex flex-col justify-between gap-12">
+                        <div className="flex flex-col gap-6">
+                          <span className="font-mono text-[9px] md:text-[10px] tracking-[0.45em] text-accent uppercase block">
+                            CONTACT US // JJ FILMS
+                          </span>
+                          <h2 className="font-display text-4xl md:text-5xl font-light tracking-tight text-foreground leading-[1.2]">
+                            Get in touch to <span className="italic font-serif text-accent">start a project</span>.
+                          </h2>
+                          <p className="font-body text-xs md:text-sm text-foreground/50 leading-relaxed max-w-md">
+                            Have an upcoming campaign, a luxury listing, or a wedding celebration? Reach out to schedule a consultation with our production directors. We respond within 24 hours.
+                          </p>
+                        </div>
+
+                        {/* Interactive Coordinates */}
+                        <div className="flex flex-col gap-6 max-w-sm pt-8 border-t border-white/5">
+                          <div className="flex flex-col gap-1.5">
+                            <span className="font-mono text-[7.5px] text-foreground/35 tracking-[0.25em] uppercase">DIRECT EMAIL</span>
+                            <a href="mailto:hello@jjfilms.co" className="font-serif text-base text-foreground hover:text-accent transition-colors duration-300 w-fit">
+                              hello@jjfilms.co
+                            </a>
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <span className="font-mono text-[7.5px] text-foreground/35 tracking-[0.25em] uppercase">CALL OR WHATSAPP</span>
+                            <a href="tel:+15550192831" className="font-serif text-base text-foreground hover:text-accent transition-colors duration-300 w-fit">
+                              +1 (555) 019-2831
+                            </a>
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <span className="font-mono text-[7.5px] text-foreground/35 tracking-[0.25em] uppercase">CREATIVE HUBS</span>
+                            <span className="font-serif text-sm text-[#7c7c82]">
+                              Los Angeles // New York // London
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right: Sleek Onboarding Contact Form */}
+                      <div className="lg:col-span-7">
+                        <form 
+                          onSubmit={(e) => {
+                            e.preventDefault();
+                            alert("Thank you! Your inquiry brief has been received. A production director will contact you shortly.");
+                          }}
+                          className="space-y-6 bg-[#08080a]/40 border border-white/5 p-8 md:p-10 rounded-[8px] backdrop-blur-2xl shadow-[0_30px_70px_rgba(0,0,0,0.8)] relative overflow-hidden group"
+                        >
+                          <div className="absolute top-4 left-4 w-1.5 h-1.5 border-t border-l border-accent/20 group-hover:border-accent/40 transition-colors duration-500" />
+                          <div className="absolute bottom-4 right-4 w-1.5 h-1.5 border-b border-r border-accent/20 group-hover:border-accent/40 transition-colors duration-500" />
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div className="flex flex-col gap-2">
+                              <label className="font-mono text-[8px] text-foreground/40 tracking-[0.2em] uppercase">Your Name</label>
+                              <input 
+                                required
+                                type="text" 
+                                placeholder="E.g. Alexander Cole"
+                                className="w-full bg-[#030303] border border-white/10 rounded-[4px] px-4 py-3 text-xs text-foreground placeholder-white/20 focus:border-accent outline-none transition-colors duration-300"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-2">
+                              <label className="font-mono text-[8px] text-foreground/40 tracking-[0.2em] uppercase">Email Address</label>
+                              <input 
+                                required
+                                type="email" 
+                                placeholder="E.g. alex@example.com"
+                                className="w-full bg-[#030303] border border-white/10 rounded-[4px] px-4 py-3 text-xs text-foreground placeholder-white/20 focus:border-accent outline-none transition-colors duration-300"
+                              />
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            <label className="font-mono text-[8px] text-foreground/40 tracking-[0.2em] uppercase">Project Type</label>
+                            <select 
+                              className="w-full bg-[#030303] border border-white/10 rounded-[4px] px-4 py-3 text-xs text-foreground focus:border-accent outline-none transition-colors duration-300"
+                            >
+                              <option value="real_estate">Real Estate &amp; Architecture</option>
+                              <option value="commercial">Commercial Campaign / Brand Film</option>
+                              <option value="wedding">Luxury Wedding Film / Event</option>
+                              <option value="other">Other Creative Shoot</option>
+                            </select>
+                          </div>
+
+                          <div className="flex flex-col gap-2">
+                            <label className="font-mono text-[8px] text-foreground/40 tracking-[0.2em] uppercase">Project Narrative / Vision</label>
+                            <textarea 
+                              required
+                              rows={4}
+                              placeholder="Tell us about the property, schedule, or brand narrative..."
+                              className="w-full bg-[#030303] border border-white/10 rounded-[4px] px-4 py-3 text-xs text-foreground placeholder-white/20 focus:border-accent outline-none transition-colors duration-300 resize-none"
+                            />
+                          </div>
+
+                          <button 
+                            type="submit"
+                            className="w-full inline-flex items-center justify-center font-mono text-[9px] tracking-[0.25em] uppercase bg-accent text-background hover:bg-white hover:text-background py-4 rounded-[4px] font-semibold transition-all duration-300 cursor-pointer border-none outline-none"
+                          >
+                            Submit Project Brief
+                          </button>
+                        </form>
+                      </div>
+
+                    </div>
+                  </div>
+                </section>
+              )}
+
+              {/* High-Impact CTA Section */}
+              {activeCard !== null && (
+                <section
+                  id="details-cta"
+                  className="relative py-28 md:py-36 px-8 md:px-24 bg-[#0d0d11] overflow-hidden border-t border-b border-white/5"
+                >
+                  {/* Subtle golden backdrop flares */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.03)_0%,transparent_70%)] pointer-events-none" />
+                  
+                  {/* Glowing vertical bars on sides */}
+                  <div className="absolute left-6 top-1/2 -translate-y-1/2 h-[60%] w-[1px] bg-gradient-to-b from-transparent via-accent/30 to-transparent opacity-40 hidden md:block" />
+                  <div className="absolute right-6 top-1/2 -translate-y-1/2 h-[60%] w-[1px] bg-gradient-to-b from-transparent via-accent/30 to-transparent opacity-40 hidden md:block" />
+
+                  <div className="max-w-4xl mx-auto relative z-10 text-center flex flex-col items-center gap-8">
+                    <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] text-accent uppercase block animate-pulse">
+                      PRODUCTION SCHEDULE // NOW BOOKING Q3 &amp; Q4
+                    </span>
+                    
+                    <h2 className="font-display text-4xl md:text-7xl font-light tracking-tight text-foreground leading-[1.1] max-w-3xl">
+                      Ready to direct your <span className="italic font-serif text-accent">visual masterpiece</span>?
+                    </h2>
+                    
+                    <p className="font-body text-xs md:text-sm text-[#7c7c82] max-w-xl leading-relaxed">
+                      Secure your production date with our award-winning cinematography team. Drop a brief or call directly to review storyboarding and custom camera treatments.
+                    </p>
+
+                    <button
+                      onClick={() => {
+                        const target = document.getElementById("details-contact");
+                        if (target) target.scrollIntoView({ behavior: "smooth" });
+                      }}
+                      className="inline-flex items-center justify-center font-mono text-[9px] tracking-[0.25em] uppercase border border-accent hover:bg-accent hover:text-background text-accent px-8 py-4 rounded-[4px] transition-all duration-500 font-semibold cursor-pointer outline-none bg-transparent"
+                    >
+                      Secure Production Date
+                    </button>
+                  </div>
+                </section>
+              )}
+
+              <footer
+                id="details-footer"
+                className="relative bg-[#030303] py-24 md:py-32 px-8 md:px-24 overflow-hidden"
+              >
+                {/* Top Accent Gradient Border */}
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
+                
+                {/* Big Ambient Backlit Glow */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full bg-accent/5 blur-[120px] pointer-events-none select-none" />
+
+                <div className="max-w-7xl mx-auto relative z-10">
+                  {/* Main Footer Content */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-24">
+                    
+                    {/* Left Side: Brand Statement & Contact Links (7 cols) */}
+                    <div className="lg:col-span-7 flex flex-col justify-between gap-12">
+                      <div className="flex flex-col gap-6">
+                        <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] text-accent uppercase block">
+                          JJ FILMS // GLOBAL CREATIVE STUDIO
+                        </span>
+                        <h2 className="font-display text-4xl md:text-6xl font-light tracking-tight text-foreground leading-[1.1] max-w-2xl">
+                          Let's shape your <span className="italic font-normal text-accent font-serif">cinematic legacy</span>.
+                        </h2>
+                      </div>
+
+                      {/* Contact Coordinates */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-8 border-t border-white/5 max-w-xl">
+                        <div className="flex flex-col gap-2">
+                          <span className="font-mono text-[8px] text-foreground/40 tracking-[0.25em] uppercase">
+                            Direct Inquiry
+                          </span>
+                          <a 
+                            href="mailto:hello@jjfilms.co" 
+                            className="font-serif text-lg md:text-xl text-[#eae6e1] hover:text-accent transition-colors duration-300 w-fit"
+                          >
+                            hello@jjfilms.co
+                          </a>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <span className="font-mono text-[8px] text-foreground/40 tracking-[0.25em] uppercase">
+                            Call Booking
+                          </span>
+                          <a 
+                            href="tel:+15550192831" 
+                            className="font-serif text-lg md:text-xl text-[#eae6e1] hover:text-accent transition-colors duration-300 w-fit"
+                          >
+                            +1 (555) 019-2831
+                          </a>
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <span className="font-mono text-[8px] text-foreground/40 tracking-[0.25em] uppercase">
+                            Creative Hub
+                          </span>
+                          <span className="font-serif text-base text-[#7c7c82]">
+                            Los Angeles &amp; New York
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Right Side: Exclusivity Availability Box (5 cols) */}
+                    <div className="lg:col-span-5">
+                      <div className="relative bg-[#08080a]/90 backdrop-blur-3xl border border-white/10 p-8 md:p-10 rounded-[12px] shadow-[0_20px_50px_rgba(0,0,0,0.8)] overflow-hidden group hover:border-accent/40 transition-all duration-700">
+                        {/* Focus bracket detailing */}
+                        <div className="absolute top-4 left-4 w-2 h-2 border-t border-l border-accent/20 group-hover:border-accent/50 transition-colors duration-500" />
+                        <div className="absolute bottom-4 right-4 w-2 h-2 border-b border-r border-accent/20 group-hover:border-accent/50 transition-colors duration-500" />
+                        
+                        {/* Glow behind box */}
+                        <div className="absolute -top-12 -right-12 w-24 h-24 rounded-full bg-accent/10 blur-xl pointer-events-none" />
+
+                        <div className="flex items-center gap-2 mb-6">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                          <span className="font-mono text-[8px] tracking-[0.25em] text-foreground/40 uppercase">
+                            AVAILABILITY // OPEN
+                          </span>
+                        </div>
+
+                        <h3 className="font-display text-2xl font-light text-foreground mb-4">
+                          Start a Project
+                        </h3>
+                        
+                        <p className="font-body text-xs text-foreground/60 leading-relaxed mb-8">
+                          We partner with select visionaries, architects, and luxury brands to execute high-fidelity visual assets. Drop a note to explore rates, schedules, and custom treatments.
+                        </p>
+
+                        <button
+                          onClick={() => {
+                            alert("Thank you! Our project onboarding form will be available shortly.");
+                          }}
+                          className="w-full inline-flex items-center justify-between font-mono text-[9px] tracking-[0.25em] uppercase border border-accent/30 hover:border-accent text-accent px-6 py-4 rounded-[4px] transition-all duration-500 hover:bg-accent hover:text-background font-semibold cursor-pointer outline-none bg-transparent"
+                        >
+                          <span>Send Brief</span>
+                          <span className="transition-transform duration-500 group-hover:translate-x-1">
+                            →
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Footer Bottom / Meta Grid */}
+                  <div className="border-t border-white/5 pt-12 flex flex-col md:flex-row items-center justify-between gap-8">
+                    {/* Social Coordinates */}
+                    <div className="flex flex-wrap items-center gap-6 md:gap-10 font-mono text-[8px] md:text-[9px] tracking-[0.25em] uppercase text-foreground/35">
+                      <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors duration-300">
+                        01 / Instagram
+                      </a>
+                      <span className="text-white/10 select-none">|</span>
+                      <a href="https://vimeo.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors duration-300">
+                        02 / Vimeo
+                      </a>
+                      <span className="text-white/10 select-none">|</span>
+                      <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors duration-300">
+                        03 / Youtube
+                      </a>
+                    </div>
+
+                    {/* Copyright & Scroll Top */}
+                    <div className="flex items-center gap-8 font-mono text-[8px] md:text-[9px] tracking-[0.25em] uppercase text-foreground/35">
+                      <span>© 2026 JJ FILMS.</span>
+                      <button
+                        onClick={() => scrollToSection("hero-section")}
+                        className="group inline-flex items-center gap-2 text-foreground/35 hover:text-accent transition-colors duration-300 border-none bg-transparent outline-none p-0 cursor-pointer"
+                      >
+                        BACK TO TOP
+                        <span className="inline-block transition-transform duration-300 group-hover:-translate-y-0.5">
+                          ↑
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              </footer>
                 </div>
               );
             })()}
