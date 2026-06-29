@@ -8,6 +8,7 @@ import Lenis from "lenis";
 import WhatsAppButton from "./WhatsAppButton";
 import TrustStrip from "./TrustStrip";
 import PartnersStrip from "./PartnersStrip";
+import BookingSchedule from "./BookingSchedule";
 
 const TOTAL_FRAMES = 240;
 const HISTOGRAM_HEIGHTS = [30, 55, 45, 75, 40, 65, 50, 85, 35, 60, 25, 70];
@@ -374,6 +375,27 @@ const getPath = (
   }
 };
 
+const TESTIMONIALS_1 = [
+  { name: "Titan Group", text: "The transparency and commitment Jayesh & Jignesh bring is unmatched. Creative directors at the absolute top of their game.", role: "Brand Partner" },
+  { name: "Highly India", text: "Stunning production values. Their drone captures and interior compositions are exceptionally high fidelity.", role: "Corporate Client" },
+  { name: "Hitachi", text: "Volumetric shadows, rich details. They created a visual masterpiece for our new automated facilities.", role: "Enterprise Partner" },
+  { name: "Nayandhara Dev", text: "No hidden costs, no surprises. When you hand them a project, you can step back completely. 100% reliability.", role: "Real Estate Director" },
+];
+
+const TESTIMONIALS_2 = [
+  { name: "Tanishq", text: "The product reveal videos generated massive market hype. Volumetric lighting and macro lenses did magic.", role: "Marketing Lead" },
+  { name: "Global Estates", text: "Outstanding spatial walkthrough films. The 3D tours helped our international buyers buy luxury units remotely.", role: "Sales Director" },
+  { name: "Rajeev & Neha", text: "Our wedding film feels like a cinematic masterpiece. Every candid tear and laugh is preserved in pristine 4K.", role: "Legacy Clients" },
+  { name: "Vortex Projects", text: "Architectural geometries captured at golden hour. Absolute visual prestige that drove early off-plan developer bookings.", role: "Developer" },
+];
+
+const TESTIMONIALS_3 = [
+  { name: "Aura Homes", text: "Their interior staging and light transitions are crafted with absolute architectural and emotional resonance.", role: "Creative Director" },
+  { name: "Metro Build", text: "Periodic construction tracking reports delivered precisely on timeline. Exceptional project documentation.", role: "Project Manager" },
+  { name: "Umiya Realty", text: "Zero bad reviews in 24 years is a well-deserved track record. Absolute dedication from the twin founders.", role: "Managing Director" },
+  { name: "Luxury Villas", text: "Cinematic lifestyle scripts and custom sound designs. They elevate premium properties to work like poetry.", role: "Luxe Agency" },
+];
+
 export default function ScrollVideoHero() {
   const triggerRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -396,6 +418,7 @@ export default function ScrollVideoHero() {
   const [showAllServices, setShowAllServices] = useState(false);
   const [showAllServicesView, setShowAllServicesView] = useState(false);
   const [showAboutView, setShowAboutView] = useState(false);
+  const [activeAboutIndex, setActiveAboutIndex] = useState(0);
   const [homepageScrollProgress, setHomepageScrollProgress] = useState(0);
   const [detailScrollProgress, setDetailScrollProgress] = useState(0);
   const [transitionFinished, setTransitionFinished] = useState(false);
@@ -1551,7 +1574,9 @@ export default function ScrollVideoHero() {
           <div className="hidden md:flex flex-shrink-0 justify-center items-center gap-3.5 lg:gap-8">
             <button
               onClick={() => {
-                handleCloseDetail();
+                setShowAllServicesView(false);
+                setShowAboutView(false);
+                setTimeout(() => scrollToSection("hero-section"), 50);
               }}
               className="font-body text-[9.5px] lg:text-[11px] tracking-[0.2em] uppercase text-foreground/75 hover:text-accent transition-colors cursor-pointer border-none bg-transparent outline-none p-0 relative group font-semibold"
             >
@@ -1608,6 +1633,21 @@ export default function ScrollVideoHero() {
               onClick={() => {
                 if (showAllServicesView) {
                   setShowAllServicesView(false);
+                  setTimeout(() => scrollToSection("testimonials-section"), 50);
+                } else {
+                  scrollToSection("testimonials-section");
+                }
+              }}
+              className="font-body text-[9.5px] lg:text-[11px] tracking-[0.2em] uppercase text-foreground/75 hover:text-accent transition-colors cursor-pointer border-none bg-transparent outline-none p-0 relative group font-semibold"
+            >
+              Testimonials
+              <span className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-accent rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </button>
+            <span className="text-white/20 font-body text-[9.5px] lg:text-[11px] select-none">/</span>
+            <button
+              onClick={() => {
+                if (showAllServicesView) {
+                  setShowAllServicesView(false);
                   setTimeout(() => scrollToSection("details-contact"), 50);
                 } else {
                   scrollToSection("details-contact");
@@ -1622,22 +1662,7 @@ export default function ScrollVideoHero() {
 
           {/* CTA & Close Button Wrapper */}
           <div className="flex-1 flex justify-end items-center gap-3 lg:gap-6">
-            <button
-              onClick={() => {
-                if (showAllServicesView) {
-                  setShowAllServicesView(false);
-                  setTimeout(() => scrollToSection("details-contact"), 50);
-                } else {
-                  scrollToSection("details-contact");
-                }
-              }}
-              className="whitespace-nowrap inline-flex items-center justify-center font-body text-[8.5px] lg:text-[10px] tracking-[0.15em] uppercase bg-accent text-background hover:bg-white hover:text-background px-3.5 lg:px-5 py-2.5 rounded-full transition-all duration-300 font-semibold shadow-[0_4px_12px_rgba(197,168,128,0.25)] cursor-pointer border-none outline-none"
-            >
-              Book Consultation
-            </button>
-            <span className="text-white/10 hidden sm:inline select-none">
-              |
-            </span>
+
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -2568,24 +2593,32 @@ export default function ScrollVideoHero() {
 
                             {/* Left — Cinematic Image */}
                             <div className="relative w-full aspect-[3/4] md:aspect-[4/5] lg:aspect-[3/4] overflow-hidden rounded-[4px] bg-[#09090b]">
-                              {/* Image */}
-                              <img
-                                src={details.heroImage}
-                                alt="JJ Films — Studio"
-                                className="w-full h-full object-cover select-none"
-                                draggable={false}
-                              />
+                              {/* Crossfading Images */}
+                              {[0, 1, 2].map((idx) => {
+                                const imgUrl = details.gallery[idx]?.image || details.heroImage;
+                                return (
+                                  <img
+                                    key={idx}
+                                    src={imgUrl}
+                                    alt={`JJ Films — About ${idx + 1}`}
+                                    className={`absolute inset-0 w-full h-full object-cover select-none transition-all duration-[800ms] ease-in-out ${
+                                      activeAboutIndex === idx ? "opacity-100 scale-100 z-10" : "opacity-0 scale-95 z-0"
+                                    }`}
+                                    draggable={false}
+                                  />
+                                );
+                              })}
                               {/* Cinematic vignette */}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none" />
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none z-20" />
                               {/* Corner viewfinder brackets */}
-                              <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-accent/50" />
-                              <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-accent/50" />
-                              <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-accent/50" />
-                              <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-accent/50" />
+                              <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-accent/50 z-20" />
+                              <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-accent/50 z-20" />
+                              <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-accent/50 z-20" />
+                              <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-accent/50 z-20" />
                               {/* Caption overlay */}
-                              <div className="absolute bottom-6 left-6 right-6">
+                              <div className="absolute bottom-6 left-6 right-6 z-20">
                                 <span className="font-mono text-[7px] tracking-[0.3em] text-white/60 uppercase">
-                                  JJ FILMS // STUDIO
+                                  JJ FILMS // {activeAboutIndex === 0 ? "STUDIO" : activeAboutIndex === 1 ? "EXCELLENCE" : "TRUST"}
                                 </span>
                               </div>
                             </div>
@@ -2608,7 +2641,7 @@ export default function ScrollVideoHero() {
                               </div>
 
                               {/* Three numbered points */}
-                              <div className="flex flex-col gap-8">
+                              <div className="flex flex-col gap-6">
                                 {[
                                   {
                                     num: "01",
@@ -2625,21 +2658,34 @@ export default function ScrollVideoHero() {
                                     title: "Trusted by industry giants",
                                     body: "Titan, Tanishq, Hitachi, Highly — and many more. Once a client hands us the brief, they never have to worry again.",
                                   },
-                                ].map(({ num, title, body }) => (
-                                  <div key={num} className="flex gap-5 items-start border-t border-white/5 pt-6">
-                                    <span className="font-mono text-[8px] tracking-[0.3em] text-accent/60 uppercase shrink-0 mt-1">
-                                      [{num}]
-                                    </span>
-                                    <div className="flex flex-col gap-1.5">
-                                      <h3 className="font-display text-lg md:text-xl font-light text-[#eae6e1]">
-                                        {title}
-                                      </h3>
-                                      <p className="font-body text-sm text-foreground/50 leading-relaxed">
-                                        {body}
-                                      </p>
+                                ].map(({ num, title, body }, idx) => {
+                                  const isActive = activeAboutIndex === idx;
+                                  return (
+                                    <div
+                                      key={num}
+                                      onMouseEnter={() => setActiveAboutIndex(idx)}
+                                      className={`flex gap-5 items-start border-t border-white/5 pt-5 transition-all duration-500 cursor-pointer ${
+                                        isActive ? "opacity-100 pl-2 border-accent/20" : "opacity-40 hover:opacity-75"
+                                      }`}
+                                    >
+                                      <span className={`font-mono text-[8px] tracking-[0.3em] uppercase shrink-0 mt-1 transition-colors duration-500 ${
+                                        isActive ? "text-accent font-semibold" : "text-foreground/40"
+                                      }`}>
+                                        [{num}]
+                                      </span>
+                                      <div className="flex flex-col gap-1">
+                                        <h3 className={`font-display text-lg md:text-xl font-light transition-colors duration-500 ${
+                                          isActive ? "text-accent" : "text-[#eae6e1]"
+                                        }`}>
+                                          {title}
+                                        </h3>
+                                        <p className="font-body text-sm text-foreground/50 leading-relaxed">
+                                          {body}
+                                        </p>
+                                      </div>
                                     </div>
-                                  </div>
-                                ))}
+                                  );
+                                })}
                               </div>
 
                               {/* Quick stats row */}
@@ -2859,6 +2905,118 @@ export default function ScrollVideoHero() {
                           </div>
                         </section>
                       )}
+
+                      {/* ── Testimonials Section ── */}
+                      <section
+                        id="testimonials-section"
+                        className="relative py-24 md:py-32 bg-[#030303] border-t border-accent/5 overflow-hidden w-full"
+                      >
+                        {/* Inline custom styles for infinite marquee loop */}
+                        <style>{`
+                          @keyframes marqueeLeft {
+                            0% { transform: translateX(0); }
+                            100% { transform: translateX(-50%); }
+                          }
+                          @keyframes marqueeRight {
+                            0% { transform: translateX(-50%); }
+                            100% { transform: translateX(0); }
+                          }
+                          .animate-marquee-left-track {
+                            animation: marqueeLeft 35s linear infinite;
+                          }
+                          .animate-marquee-right-track {
+                            animation: marqueeRight 35s linear infinite;
+                          }
+                          .animate-marquee-left-track:hover,
+                          .animate-marquee-right-track:hover {
+                            animation-play-state: paused;
+                          }
+                        `}</style>
+
+                        {/* Ambient corner glows */}
+                        <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.04] blur-[120px] pointer-events-none select-none" />
+                        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.04] blur-[120px] pointer-events-none select-none" />
+
+                        <div className="max-w-7xl mx-auto px-8 md:px-24 mb-16 relative z-10 text-center">
+                          <span className="font-mono text-[9px] md:text-[10px] tracking-[0.45em] text-accent uppercase block mb-3">
+                            TESTIMONIALS // PARTNER OPINIONS
+                          </span>
+                          <h2 className="font-display text-4xl md:text-5xl font-light italic tracking-wide text-foreground">
+                            What our clients say
+                          </h2>
+                        </div>
+
+                        <div className="flex flex-col gap-6 relative z-10 overflow-hidden w-full py-2">
+                          {/* Track 1: Left to Right */}
+                          <div className="overflow-hidden w-full">
+                            <div className="flex gap-6 animate-marquee-right-track w-max py-1">
+                              {[...TESTIMONIALS_1, ...TESTIMONIALS_1].map((item, idx) => (
+                                <div
+                                  key={idx}
+                                  className="bg-[#09090b]/40 backdrop-blur-sm border border-white/5 rounded-[4px] p-6 w-[320px] md:w-[350px] flex flex-col gap-4 hover:border-accent/30 hover:bg-[#0c0c0f]/60 transition-all duration-300"
+                                >
+                                  <div className="flex justify-between items-center">
+                                    <span className="font-display text-base font-medium text-[#eae6e1]">{item.name}</span>
+                                    <span className="text-accent text-[10px] tracking-wider">★★★★★</span>
+                                  </div>
+                                  <p className="font-body text-xs md:text-sm text-foreground/70 italic leading-relaxed">
+                                    &ldquo;{item.text}&rdquo;
+                                  </p>
+                                  <span className="font-mono text-[8px] tracking-[0.2em] text-accent/60 uppercase mt-auto">
+                                    {item.role}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Track 2: Right to Left */}
+                          <div className="overflow-hidden w-full">
+                            <div className="flex gap-6 animate-marquee-left-track w-max py-1">
+                              {[...TESTIMONIALS_2, ...TESTIMONIALS_2].map((item, idx) => (
+                                <div
+                                  key={idx}
+                                  className="bg-[#09090b]/40 backdrop-blur-sm border border-white/5 rounded-[4px] p-6 w-[320px] md:w-[350px] flex flex-col gap-4 hover:border-accent/30 hover:bg-[#0c0c0f]/60 transition-all duration-300"
+                                >
+                                  <div className="flex justify-between items-center">
+                                    <span className="font-display text-base font-medium text-[#eae6e1]">{item.name}</span>
+                                    <span className="text-accent text-[10px] tracking-wider">★★★★★</span>
+                                  </div>
+                                  <p className="font-body text-xs md:text-sm text-foreground/70 italic leading-relaxed">
+                                    &ldquo;{item.text}&rdquo;
+                                  </p>
+                                  <span className="font-mono text-[8px] tracking-[0.2em] text-accent/60 uppercase mt-auto">
+                                    {item.role}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          {/* Track 3: Left to Right */}
+                          <div className="overflow-hidden w-full">
+                            <div className="flex gap-6 animate-marquee-right-track w-max py-1">
+                              {[...TESTIMONIALS_3, ...TESTIMONIALS_3].map((item, idx) => (
+                                <div
+                                  key={idx}
+                                  className="bg-[#09090b]/40 backdrop-blur-sm border border-white/5 rounded-[4px] p-6 w-[320px] md:w-[350px] flex flex-col gap-4 hover:border-accent/30 hover:bg-[#0c0c0f]/60 transition-all duration-300"
+                                >
+                                  <div className="flex justify-between items-center">
+                                    <span className="font-display text-base font-medium text-[#eae6e1]">{item.name}</span>
+                                    <span className="text-accent text-[10px] tracking-wider">★★★★★</span>
+                                  </div>
+                                  <p className="font-body text-xs md:text-sm text-foreground/70 italic leading-relaxed">
+                                    &ldquo;{item.text}&rdquo;
+                                  </p>
+                                  <span className="font-mono text-[8px] tracking-[0.2em] text-accent/60 uppercase mt-auto">
+                                    {item.role}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </section>
                     </>
                   )}
 
@@ -3020,52 +3178,7 @@ export default function ScrollVideoHero() {
 
                   {/* High-Impact CTA Section */}
                   {activeCard !== null && (
-                    <section
-                      id="details-cta"
-                      className="relative py-10 md:py-14 px-8 md:px-24 bg-[#030303] overflow-hidden border-t border-b border-white/5"
-                    >
-                      {/* Subtle corner ambient lighting */}
-                      <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
-                      <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
-                      {/* Subtle golden backdrop flares */}
-                      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.03)_0%,transparent_70%)] pointer-events-none" />
-
-                      {/* Glowing vertical bars on sides */}
-                      <div className="absolute left-6 top-1/2 -translate-y-1/2 h-[60%] w-[1px] bg-gradient-to-b from-transparent via-accent/30 to-transparent opacity-40 hidden md:block" />
-                      <div className="absolute right-6 top-1/2 -translate-y-1/2 h-[60%] w-[1px] bg-gradient-to-b from-transparent via-accent/30 to-transparent opacity-40 hidden md:block" />
-
-                      <div className="max-w-4xl mx-auto relative z-10 text-center flex flex-col items-center gap-8">
-                        <span className="font-mono text-[9px] md:text-[10px] tracking-[0.4em] text-accent uppercase block animate-pulse">
-                          PRODUCTION SCHEDULE // NOW BOOKING Q3 &amp; Q4
-                        </span>
-
-                        <h2 className="font-display text-4xl md:text-7xl font-light tracking-tight text-foreground leading-[1.1] max-w-3xl">
-                          Ready to direct your{" "}
-                          <span className="italic font-serif text-accent">
-                            visual masterpiece
-                          </span>
-                          ?
-                        </h2>
-
-                        <p className="font-body text-sm md:text-base text-foreground/80 max-w-xl leading-relaxed">
-                          Secure your production date with our award-winning
-                          cinematography team. Drop a brief or call directly to
-                          review storyboarding and custom camera treatments.
-                        </p>
-
-                        <button
-                          onClick={() => {
-                            const target =
-                              document.getElementById("details-contact");
-                            if (target)
-                              target.scrollIntoView({ behavior: "smooth" });
-                          }}
-                          className="inline-flex items-center justify-center font-mono text-[9px] tracking-[0.25em] uppercase border border-accent hover:bg-accent hover:text-background text-accent px-8 py-4 rounded-[4px] transition-all duration-500 font-semibold cursor-pointer outline-none bg-transparent"
-                        >
-                          Secure Production Date
-                        </button>
-                      </div>
-                    </section>
+                    <BookingSchedule onBtnClick={() => scrollToSection("details-contact")} />
                   )}
 
                   <footer

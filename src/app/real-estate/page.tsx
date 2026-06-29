@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import TrustStrip from "@/components/TrustStrip";
 import PartnersStrip from "@/components/PartnersStrip";
+import BookingSchedule from "@/components/BookingSchedule";
 
 
 const SERVICES_LIST = [
@@ -317,35 +318,8 @@ export default function RealEstatePage() {
       <PartnersStrip />
 
       {/* Bottom Placeholder Section */}
-      <section
-        ref={bottomSecRef}
-        className="relative min-h-[50vh] md:min-h-[60vh] bg-black/40 border-t border-accent/5 flex flex-col items-center justify-center overflow-hidden"
-      >
-        {/* Subtle corner ambient lighting */}
-        <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
-        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
-        {/* Technical Focus Grid Graphic in Background */}
-        <div className="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center">
-          <div className="w-[80%] h-[80%] border border-accent/50 rounded-full relative flex items-center justify-center">
-            <div className="absolute w-[10px] h-[10px] border-t border-l border-accent/80 -top-[5px] -left-[5px]" />
-            <div className="absolute w-[10px] h-[10px] border-t border-r border-accent/80 -top-[5px] -right-[5px]" />
-            <div className="absolute w-[10px] h-[10px] border-b border-l border-accent/80 -bottom-[5px] -left-[5px]" />
-            <div className="absolute w-[10px] h-[10px] border-b border-r border-accent/80 -bottom-[5px] -right-[5px]" />
-            
-            <div className="w-1.5 h-1.5 rounded-full bg-accent" />
-          </div>
-        </div>
-
-        {/* Text Label */}
-        <div className="text-center z-10 p-8 select-none">
-          <span className="font-mono text-[10px] md:text-xs tracking-[0.35em] text-accent/70 uppercase">
-            [ SECTION II — FUTURE EXPANSION ]
-          </span>
-          <p className="font-body text-xs text-foreground/60 mt-4 max-w-xs mx-auto leading-relaxed uppercase tracking-[0.2em]">
-            Asset galleries, builder showcases, and interactive 3D elements coming soon.
-          </p>
-        </div>
-      </section>
+      {/* Booking Schedule CTA Section */}
+      <BookingSchedule btnHref="/#details-contact" />
       <WhatsAppButton />
     </main>
   );

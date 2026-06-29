@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
+import BookingSchedule from "@/components/BookingSchedule";
 
 export default function AboutPage() {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -146,21 +147,7 @@ export default function AboutPage() {
         <div className="w-full h-[1px] bg-white/5" />
 
         {/* CTA */}
-        <section className="px-8 md:px-24 py-16 md:py-20 bg-[#0d0d10] text-center">
-          <span className="font-mono text-[9px] tracking-[0.45em] text-accent uppercase block mb-5">
-            LET&apos;S WORK TOGETHER
-          </span>
-          <h2 className="font-display text-3xl md:text-5xl font-light italic tracking-wide text-foreground mb-10">
-            Ready to tell your property&apos;s story?
-          </h2>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.2em] uppercase text-[#030303] bg-accent px-8 py-4 rounded-[4px] hover:bg-accent/90 transition-all duration-500"
-          >
-            <span>Explore Our Work</span>
-            <span>&rarr;</span>
-          </Link>
-        </section>
+        <BookingSchedule btnHref="/#details-contact" />
       </div>
     </main>
   );
