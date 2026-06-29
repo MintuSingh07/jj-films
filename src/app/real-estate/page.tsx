@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import TrustStrip from "@/components/TrustStrip";
+import PartnersStrip from "@/components/PartnersStrip";
 
 
 const SERVICES_LIST = [
@@ -57,6 +58,7 @@ const SERVICES_LIST = [
 
 export default function RealEstatePage() {
   const [showAll, setShowAll] = useState(false);
+  const [hoveredRect, setHoveredRect] = useState<{ left: number; top: number; width: number; height: number } | null>(null);
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLSpanElement>(null);
@@ -106,7 +108,7 @@ export default function RealEstatePage() {
 
       // 3. Grid cards staggered entrance
       if (gridRef.current) {
-        const cards = gridRef.current.children;
+        const cards = gridRef.current.querySelectorAll(".service-card");
         gsap.fromTo(
           cards,
           { opacity: 0, y: 40 },
@@ -204,8 +206,11 @@ export default function RealEstatePage() {
       {/* Services Section */}
       <section
         ref={servicesSecRef}
-        className="relative py-24 md:py-32 px-8 md:px-24 border-t border-accent/5 bg-background"
+        className="relative py-24 md:py-32 px-8 md:px-24 border-t border-accent/5 bg-background overflow-hidden"
       >
+        {/* Subtle corner ambient lighting */}
+        <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-6">
           <div>
@@ -237,14 +242,40 @@ export default function RealEstatePage() {
         {/* Services Grid */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
+          className="relative grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
+          onMouseLeave={() => setHoveredRect(null)}
         >
+          {/* Liquid Flow Overlay */}
+          <div
+            className="absolute pointer-events-none transition-all duration-500 ease-[cubic-bezier(0.25,1,0.3,1)] z-20 bg-white"
+            style={{
+              left: hoveredRect ? hoveredRect.left : 0,
+              top: hoveredRect ? hoveredRect.top : 0,
+              width: hoveredRect ? hoveredRect.width : 0,
+              height: hoveredRect ? hoveredRect.height : 0,
+              opacity: hoveredRect ? 1 : 0,
+              transform: hoveredRect ? "scale(1.02)" : "scale(0.95)",
+              mixBlendMode: "difference",
+              borderRadius: "4px",
+              animation: "morphLiquid 6s ease-in-out infinite alternate",
+            }}
+          />
+
           {(showAll ? SERVICES_LIST : SERVICES_LIST.slice(0, 8)).map((service, index) => {
             const num = String(index + 1).padStart(2, "0");
             return (
               <div
                 key={index}
-                className="group relative flex flex-col bg-[#0a0a0c]/60 border border-accent/15 rounded-[4px] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#121215]/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(197,168,128,0.15)]"
+                className="service-card group relative flex flex-col bg-[#0a0a0c]/60 border border-accent/15 rounded-[4px] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#121215]/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(197,168,128,0.15)]"
+                onMouseEnter={(e) => {
+                  const card = e.currentTarget;
+                  setHoveredRect({
+                    left: card.offsetLeft,
+                    top: card.offsetTop,
+                    width: card.offsetWidth,
+                    height: card.offsetHeight,
+                  });
+                }}
               >
                 {/* Image Placeholder Area */}
                 <div className="relative aspect-[4/3] w-full bg-[#070709] overflow-hidden flex items-center justify-center">
@@ -283,11 +314,16 @@ export default function RealEstatePage() {
         </div>
       </section>
 
+      <PartnersStrip />
+
       {/* Bottom Placeholder Section */}
       <section
         ref={bottomSecRef}
         className="relative min-h-[50vh] md:min-h-[60vh] bg-black/40 border-t border-accent/5 flex flex-col items-center justify-center overflow-hidden"
       >
+        {/* Subtle corner ambient lighting */}
+        <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
+        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
         {/* Technical Focus Grid Graphic in Background */}
         <div className="absolute inset-0 pointer-events-none opacity-5 flex items-center justify-center">
           <div className="w-[80%] h-[80%] border border-accent/50 rounded-full relative flex items-center justify-center">

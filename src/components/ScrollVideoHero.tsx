@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 import WhatsAppButton from "./WhatsAppButton";
 import TrustStrip from "./TrustStrip";
+import PartnersStrip from "./PartnersStrip";
 
 const TOTAL_FRAMES = 240;
 const HISTOGRAM_HEIGHTS = [30, 55, 45, 75, 40, 65, 50, 85, 35, 60, 25, 70];
@@ -96,6 +97,11 @@ const SERVICES_LIST = [
     title: "360° Virtual Tours",
     description:
       "Seamless, interactive 360-degree virtual space models equipped with hot-spot labels and detailed maps, offering immersive digital inspection of premium properties from any device.",
+  },
+  {
+    title: "Twilight & Golden Hour Cinematography",
+    description:
+      "Capturing properties during the magical transition from sunset to dusk. We highlight architectural outdoor lighting, landscape geometries, and warm interior glows against the deep blue twilight sky to create an instantly captivating, high-prestige aesthetic.",
   },
 ];
 
@@ -389,6 +395,7 @@ export default function ScrollVideoHero() {
   const [startPos, setStartPos] = useState({ startLeft: 0, startRight: 0 });
   const [showAllServices, setShowAllServices] = useState(false);
   const [showAllServicesView, setShowAllServicesView] = useState(false);
+  const [showAboutView, setShowAboutView] = useState(false);
   const [homepageScrollProgress, setHomepageScrollProgress] = useState(0);
   const [detailScrollProgress, setDetailScrollProgress] = useState(0);
   const [transitionFinished, setTransitionFinished] = useState(false);
@@ -1183,16 +1190,26 @@ export default function ScrollVideoHero() {
   };
 
   const scrollToSection = (id: string) => {
-    if (localLenisRef.current) {
-      localLenisRef.current.scrollTo(id, {
-        duration: 1.2,
-        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      });
-    } else {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
+    // When the detail overlay is open, scroll within its container
+    if (detailScrollRef.current && activeCard !== null) {
+      const target = detailScrollRef.current.querySelector(`#${id}`) as HTMLElement | null;
+      if (target) {
+        const offset = target.offsetTop;
+        if (localLenisRef.current) {
+          localLenisRef.current.scrollTo(offset, {
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          });
+        } else {
+          detailScrollRef.current.scrollTo({ top: offset, behavior: "smooth" });
+        }
+        return;
       }
+    }
+    // Fallback: scroll in the main page
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -1546,9 +1563,9 @@ export default function ScrollVideoHero() {
               onClick={() => {
                 if (showAllServicesView) {
                   setShowAllServicesView(false);
-                  setTimeout(() => scrollToSection("hero-section"), 50);
+                  setTimeout(() => scrollToSection("about-section"), 50);
                 } else {
-                  scrollToSection("hero-section");
+                  scrollToSection("about-section");
                 }
               }}
               className="font-body text-[9.5px] lg:text-[11px] tracking-[0.2em] uppercase text-foreground/75 hover:text-accent transition-colors cursor-pointer border-none bg-transparent outline-none p-0 relative group font-semibold"
@@ -2043,6 +2060,7 @@ export default function ScrollVideoHero() {
                   onClick={(e) => e.stopPropagation()}
                   className="service-detail-content-inner w-full min-h-screen text-left cursor-default select-text bg-[#030303]"
                 >
+
                   {showAllServicesView ? (
                     /* Redesigned All Services Page Layout */
                     <div className="w-full min-h-screen pt-32 pb-24 px-8 md:px-24 bg-[#030303] animate-fade-in relative">
@@ -2178,6 +2196,276 @@ export default function ScrollVideoHero() {
                         </div>
                       </div>
                     </div>
+                  ) : showAboutView ? (
+                    /* ── Inline Full About View ── */
+                    <div className="w-full min-h-screen bg-[#030303] animate-fade-in relative">
+                      {/* Ambient glows */}
+                      <div className="absolute top-0 left-0 w-[500px] h-[500px] rounded-full bg-accent/[0.05] blur-[150px] pointer-events-none" />
+                      <div className="absolute bottom-1/2 right-0 w-96 h-96 rounded-full bg-accent/[0.04] blur-[150px] pointer-events-none" />
+                      <div className="absolute bottom-0 left-1/4 w-96 h-96 rounded-full bg-accent/[0.03] blur-[150px] pointer-events-none" />
+
+                      {/* ── HERO BANNER ── */}
+                      <div className="relative w-full h-[70vh] overflow-hidden bg-[#030303]">
+                        <img
+                          src={details.heroImage}
+                          alt="JJ Films Studio"
+                          className="absolute inset-0 w-full h-full object-cover opacity-45 select-none"
+                          draggable={false}
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-[#030303]/60 to-transparent pointer-events-none" />
+                        
+                        {/* Viewfinder corners */}
+                        <div className="absolute top-28 left-8 w-6 h-6 border-t-2 border-l-2 border-accent/30" />
+                        <div className="absolute top-28 right-8 w-6 h-6 border-t-2 border-r-2 border-accent/30" />
+                        <div className="absolute bottom-8 left-8 w-6 h-6 border-b-2 border-l-2 border-accent/30" />
+                        <div className="absolute bottom-8 right-8 w-6 h-6 border-b-2 border-r-2 border-accent/30" />
+
+                        {/* Central technical crosshair */}
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-20 flex items-center justify-center">
+                          <div className="w-8 h-[1px] bg-accent" />
+                          <div className="h-8 w-[1px] bg-accent absolute" />
+                          <div className="w-2 h-2 rounded-full border border-accent absolute" />
+                        </div>
+
+                        <div className="absolute bottom-24 left-8 md:left-24 max-w-4xl">
+                          <div className="flex items-center gap-3 mb-4">
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+                            <span className="font-mono text-[9px] md:text-[10px] tracking-[0.5em] text-accent uppercase">
+                              EST. 2002 // GUJARAT&apos;S FINEST PRODUCTION HOUSE
+                            </span>
+                          </div>
+                          <h1 className="font-display text-5xl md:text-8xl font-light tracking-wide text-foreground leading-[0.9] italic">
+                            Two brothers.
+                            <br />
+                            <span className="text-accent not-italic font-normal">One relentless vision.</span>
+                          </h1>
+                        </div>
+                      </div>
+
+                      {/* ── STATS BAR FLOATING CARD ── */}
+                      <div className="relative -mt-16 mx-8 md:mx-24 z-20">
+                        <div className="bg-[#09090b]/95 backdrop-blur-md border border-white/5 rounded-[4px] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+                          {/* Decorative corner indicators */}
+                          <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-accent/30" />
+                          <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-accent/30" />
+                          <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-accent/30" />
+                          <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-accent/30" />
+
+                          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-4 divide-y lg:divide-y-0 lg:divide-x divide-white/5">
+                            {[
+                              { val: "2002", label: "Year Founded", desc: "Started from home" },
+                              { val: "3000+", label: "Projects Delivered", desc: "Across India & USA" },
+                              { val: "30+", label: "Years Experience", desc: "In film & photo" },
+                              { val: "24 Yrs", label: "Zero Bad Reviews", desc: "100% Satisfaction" },
+                            ].map(({ val, label, desc }, idx) => (
+                              <div key={label} className={`flex flex-col gap-2 ${idx > 0 ? "lg:pl-8 pt-6 lg:pt-0" : "pt-0"}`}>
+                                <span className="font-display text-4xl md:text-5xl font-light text-accent tracking-tight">{val}</span>
+                                <div className="flex flex-col">
+                                  <span className="font-mono text-[8px] tracking-[0.25em] text-foreground uppercase font-semibold">{label}</span>
+                                  <span className="font-body text-[10px] text-foreground/45 mt-0.5">{desc}</span>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* ── CONTENT ── */}
+                      <div className="relative z-10 max-w-7xl mx-auto px-8 md:px-24">
+
+                        {/* Back / Control Row */}
+                        <div className="pt-16 pb-6 flex items-center justify-between">
+                          <button
+                            onClick={() => {
+                              setShowAboutView(false);
+                              if (detailScrollRef.current) {
+                                detailScrollRef.current.scrollTop = 0;
+                              }
+                              setTimeout(() => scrollToSection("about-section"), 50);
+                            }}
+                            className="group inline-flex items-center gap-3 font-mono text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-foreground/60 hover:text-accent border border-white/5 hover:border-accent/30 bg-[#0d0d10] px-5 py-3 rounded-[4px] transition-all duration-500 cursor-pointer outline-none"
+                          >
+                            <span className="group-hover:-translate-x-1.5 transition-transform duration-500">←</span>
+                            <span>NO MORE</span>
+                          </button>
+
+                          <span className="font-mono text-[8px] tracking-[0.3em] text-white/20 select-none hidden sm:inline">
+                            JJ FILMS // THE STORY
+                          </span>
+                        </div>
+
+                        <div className="w-full h-[1px] bg-white/5 mb-20" />
+
+                        {/* ── ORIGIN STORY ── */}
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-28 relative">
+                          <div className="absolute -top-12 -left-6 font-display text-[120px] font-bold text-white/[0.02] select-none leading-none">
+                            01
+                          </div>
+                          <div className="lg:col-span-4 flex flex-col gap-4 relative z-10">
+                            <span className="font-mono text-[9px] tracking-[0.4em] text-accent uppercase">01 // THE ORIGIN</span>
+                            <h2 className="font-display text-4xl md:text-5xl font-light italic tracking-wide text-foreground leading-tight">
+                              A dream built
+                              <br />
+                              on one lakh
+                            </h2>
+                          </div>
+                          <div className="lg:col-span-8 flex flex-col gap-6 justify-center relative z-10">
+                            <p className="font-body text-base md:text-lg text-foreground/80 leading-relaxed font-light border-l-2 border-accent/30 pl-6 py-1">
+                              It started with two twins, a dream, and the courage to leap. Jayesh and Jignesh had been working in the film and photography industry since their 10th standard — learning the craft from the ground up, frame by frame, reel by reel. After years of honing their skill in others&apos; studios, they made a bold decision: to bet on themselves.
+                            </p>
+                            <p className="font-body text-base text-foreground/60 leading-relaxed pl-6">
+                              In 2002, with a loan of ₹1 lakh, a Nikon FM10 for photography and a Panasonic 3500 for videography, they converted the ground floor room of their home into a studio. No glamour, no investors — just two brothers, a family who believed in them, and an unrelenting hunger to create.
+                            </p>
+                            <p className="font-body text-base text-foreground/60 leading-relaxed pl-6">
+                              That modest room became the launchpad for what is today one of Gujarat&apos;s largest and most respected production houses. Over 24 years, JJ Films has grown from a home studio into a 1,200 sq ft owned office — with a global clientele, a 10+ member team, and not a single bad review.
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="w-full h-[1px] bg-white/5 mb-24" />
+
+                        {/* ── MILESTONE TIMELINE ── */}
+                        <div className="mb-28 relative">
+                          <div className="absolute -top-12 -left-6 font-display text-[120px] font-bold text-white/[0.02] select-none leading-none">
+                            02
+                          </div>
+                          <div className="mb-16 relative z-10">
+                            <span className="font-mono text-[9px] tracking-[0.4em] text-accent uppercase">02 // THE JOURNEY</span>
+                            <h2 className="font-display text-4xl md:text-5xl font-light italic tracking-wide text-foreground mt-3">
+                              Twenty-four years in the making
+                            </h2>
+                          </div>
+                          
+                          <div className="relative border-l border-white/5 pl-8 md:pl-12 ml-4 flex flex-col gap-12">
+                            {[
+                              { year: "2002", title: "The Beginning", body: "Founded from a ground-floor home studio. First cameras purchased: Nikon FM10 &amp; Panasonic 3500. First computer taken on credit from a friend." },
+                              { year: "2005", title: "Moving Up — Literally", body: "The first floor of the family home was built. The kitchen became the new office — a bigger space for a bigger vision." },
+                              { year: "2007", title: "First Hires", body: "Three team members joined JJ Films — and all three are still with the company today. A testament to the culture built here." },
+                              { year: "2011", title: "Second Wave", body: "Three more hires. The studio expanded into the living room for even greater capacity and creative space." },
+                              { year: "2015", title: "First Rented Office", body: "A 2,000 sq ft space in Nayandhara became JJ Films&apos; first official commercial office — a milestone moment." },
+                              { year: "2017", title: "Going International", body: "JJ Films secured their first international client from the USA — a defining proof of world-class quality." },
+                              { year: "2020", title: "Owning the Space", body: "JJ Films purchased their own 1,200 sq ft office. No more rent. A permanent home for permanent excellence." },
+                              { year: "2022", title: "Third Pillar Joins", body: "A third partner came aboard, bringing fresh energy and vision to an already formidable team." },
+                              { year: "2026", title: "Gujarat&apos;s Finest", body: "Today, JJ Films stands as one of Gujarat&apos;s largest and most acclaimed production studios — globally serving, locally trusted." },
+                            ].map(({ year, title, body }, idx) => (
+                              <div key={year} className="relative flex flex-col gap-2">
+                                {/* Timeline Dot with pulsing highlight for the current year */}
+                                <div className="absolute -left-[39px] md:-left-[55px] top-1.5 z-10 flex items-center justify-center">
+                                  {idx === 8 && (
+                                    <span className="absolute w-5 h-5 rounded-full bg-accent/20 animate-ping" />
+                                  )}
+                                  <div className={`w-3.5 h-3.5 rounded-full border-2 ${idx === 8 ? "border-accent bg-[#030303]" : "border-white/10 bg-[#030303]"} flex items-center justify-center`}>
+                                    <div className={`w-1.5 h-1.5 rounded-full ${idx === 8 ? "bg-accent" : "bg-white/20"}`} />
+                                  </div>
+                                </div>
+                                
+                                <div className="flex items-baseline gap-4">
+                                  <span className="font-mono text-sm md:text-base font-semibold text-accent leading-none">{year}</span>
+                                  <h3 className="font-display text-xl md:text-2xl font-light text-[#eae6e1]">{title}</h3>
+                                </div>
+                                <p className="font-body text-sm md:text-base text-foreground/50 leading-relaxed max-w-4xl mt-1" dangerouslySetInnerHTML={{ __html: body }} />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="w-full h-[1px] bg-white/5 mb-24" />
+
+                        {/* ── VALUES ── */}
+                        <div className="mb-28 relative">
+                          <div className="absolute -top-12 -left-6 font-display text-[120px] font-bold text-white/[0.02] select-none leading-none">
+                            03
+                          </div>
+                          <div className="mb-16 relative z-10">
+                            <span className="font-mono text-[9px] tracking-[0.4em] text-accent uppercase">03 // WHAT WE STAND FOR</span>
+                            <h2 className="font-display text-4xl md:text-5xl font-light italic tracking-wide text-foreground mt-3">
+                              The promise behind every project
+                            </h2>
+                          </div>
+                          
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                              { icon: "◈", title: "Complete Transparency", body: "No hidden costs. No surprises. What you see in the quote is what you pay. Always." },
+                              { icon: "◎", title: "Time Commitment", body: "Deadlines are sacred at JJ Films. Timely delivery is not a goal — it is a guarantee." },
+                              { icon: "◉", title: "100% Client Satisfaction", body: "Once you brief us, you can step back. We over-deliver, every single time. Not one negative review in 24 years." },
+                              { icon: "◇", title: "Cutting-Edge Technology", body: "We invest in the latest and most advanced production equipment so your project reflects the very best of what is possible." },
+                              { icon: "◈", title: "Unmatched Reliability", body: "Our goodwill is our greatest asset. Clients return not just because of the quality — but because they can trust us completely." },
+                              { icon: "◎", title: "Global Standards, Local Heart", body: "Serving clients across India and internationally, while staying rooted in the values of the two brothers who started it all." },
+                            ].map(({ icon, title, body }) => (
+                              <div key={title} className="group relative bg-[#09090b]/50 backdrop-blur-sm border border-white/5 rounded-[4px] p-8 hover:border-accent/25 hover:shadow-[0_0_30px_rgba(212,175,55,0.03)] transition-all duration-500 hover:-translate-y-1 overflow-hidden">
+                                {/* Ambient card hover glow */}
+                                <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-accent/[0.01] group-hover:bg-accent/[0.03] blur-[20px] transition-all duration-500" />
+                                
+                                <span className="text-accent text-2xl font-light block mb-6 transition-transform duration-500 group-hover:scale-110 origin-left">{icon}</span>
+                                <h3 className="font-display text-xl font-light text-[#eae6e1] mb-3">{title}</h3>
+                                <p className="font-body text-sm text-foreground/50 leading-relaxed">{body}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="w-full h-[1px] bg-white/5 mb-24" />
+
+                        {/* ── CORPORATE CLIENTS ── */}
+                        <div className="mb-28 relative">
+                          <div className="absolute -top-12 -left-6 font-display text-[120px] font-bold text-white/[0.02] select-none leading-none">
+                            04
+                          </div>
+                          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 relative z-10">
+                            <div className="lg:col-span-4 flex flex-col gap-3">
+                              <span className="font-mono text-[9px] tracking-[0.4em] text-accent uppercase">04 // TRUSTED BY</span>
+                              <h2 className="font-display text-4xl md:text-5xl font-light italic tracking-wide text-foreground mt-3">
+                                The brands that trust us
+                              </h2>
+                              <p className="font-body text-sm text-foreground/50 leading-relaxed mt-4 max-w-2xl">
+                                From iconic Indian conglomerates to international names — JJ Films has been the production partner of choice for brands that demand nothing less than excellence.
+                              </p>
+                            </div>
+                            
+                            <div className="lg:col-span-8 flex flex-wrap gap-4 items-center justify-start lg:justify-end">
+                              {["Titan", "Tanishq", "Hitachi", "Highly", "+ Many More"].map((client) => (
+                                <span
+                                  key={client}
+                                  className={`font-mono text-[10px] md:text-[11px] tracking-[0.25em] uppercase px-6 py-4 rounded-[4px] border ${
+                                    client === "+ Many More"
+                                      ? "border-white/5 text-foreground/20 italic"
+                                      : "border-accent/15 text-foreground/60 hover:border-accent hover:text-accent bg-[#09090b]/30 backdrop-blur-sm transition-all duration-300"
+                                  }`}
+                                >
+                                  {client}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="w-full h-[1px] bg-white/5 mb-24" />
+
+                        {/* ── CTA ── */}
+                        <div className="text-center py-16">
+                          <span className="font-mono text-[9px] tracking-[0.45em] text-accent uppercase block mb-5">LET&apos;S CREATE TOGETHER</span>
+                          <h2 className="font-display text-3xl md:text-5xl font-light italic tracking-wide text-foreground mb-4">
+                            Your vision deserves
+                            <br />
+                            <span className="text-accent not-italic">the very best.</span>
+                          </h2>
+                          <p className="font-body text-sm md:text-base text-foreground/50 mb-10 max-w-md mx-auto leading-relaxed">
+                            Join 1,000+ clients who handed us their brief and never looked back.
+                          </p>
+                          <button
+                            onClick={() => {
+                              setShowAboutView(false);
+                              setTimeout(() => scrollToSection("details-contact"), 50);
+                            }}
+                            className="inline-flex items-center gap-3 font-mono text-xs md:text-sm tracking-[0.2em] uppercase text-[#030303] bg-accent px-8 py-4 rounded-[4px] hover:bg-white transition-all duration-500 cursor-pointer border-none outline-none"
+                          >
+                            <span>Get in Touch</span>
+                            <span>→</span>
+                          </button>
+                        </div>
+                        <div className="pb-16" />
+                      </div>
+                    </div>
                   ) : (
                     <>
                       {/* ── Hero Section — Full-Width Image Slider ── */}
@@ -2266,11 +2554,129 @@ export default function ScrollVideoHero() {
 
                       <TrustStrip />
 
+                      {/* ── About Section ── */}
+                      <section
+                        id="about-section"
+                        className="relative bg-[#0d0d10] border-t border-white/5 overflow-hidden"
+                      >
+                        {/* Ambient corner glows */}
+                        <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
+                        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
+
+                        <div className="max-w-7xl mx-auto px-8 md:px-24 py-24 md:py-32 relative z-10">
+                          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+                            {/* Left — Cinematic Image */}
+                            <div className="relative w-full aspect-[3/4] md:aspect-[4/5] lg:aspect-[3/4] overflow-hidden rounded-[4px] bg-[#09090b]">
+                              {/* Image */}
+                              <img
+                                src={details.heroImage}
+                                alt="JJ Films — Studio"
+                                className="w-full h-full object-cover select-none"
+                                draggable={false}
+                              />
+                              {/* Cinematic vignette */}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none" />
+                              {/* Corner viewfinder brackets */}
+                              <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-accent/50" />
+                              <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-accent/50" />
+                              <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-accent/50" />
+                              <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-accent/50" />
+                              {/* Caption overlay */}
+                              <div className="absolute bottom-6 left-6 right-6">
+                                <span className="font-mono text-[7px] tracking-[0.3em] text-white/60 uppercase">
+                                  JJ FILMS // STUDIO
+                                </span>
+                              </div>
+                            </div>
+
+                            {/* Right — Content */}
+                            <div className="flex flex-col gap-10">
+                              {/* Header */}
+                              <div className="flex flex-col gap-3">
+                                <span className="font-mono text-[9px] md:text-[10px] tracking-[0.45em] text-accent uppercase">
+                                  EST. 2002 // GUJARAT&apos;S FINEST
+                                </span>
+                                <h2 className="font-display text-4xl md:text-5xl font-light italic tracking-wide text-foreground leading-tight">
+                                  Built from courage,
+                                  <br />
+                                  <span className="text-accent not-italic">driven by craft</span>
+                                </h2>
+                                <p className="font-body text-sm md:text-base text-foreground/60 leading-relaxed mt-2">
+                                  Twin brothers Jayesh and Jignesh started JJ Films in 2002 with a single room, one lakh rupees, and an unshakeable belief in the power of a frame. Today, 24 years and 3,000+ projects later, they lead one of Gujarat&apos;s most trusted and celebrated production studios.
+                                </p>
+                              </div>
+
+                              {/* Three numbered points */}
+                              <div className="flex flex-col gap-8">
+                                {[
+                                  {
+                                    num: "01",
+                                    title: "30+ years of combined expertise",
+                                    body: "Jayesh and Jignesh entered the industry straight out of school — accumulating decades of field-honed knowledge before launching JJ Films.",
+                                  },
+                                  {
+                                    num: "02",
+                                    title: "Zero bad reviews in 24 years",
+                                    body: "An unbroken record of 100% client satisfaction. Transparency, on-time delivery, and no hidden costs are not policies here — they are a promise.",
+                                  },
+                                  {
+                                    num: "03",
+                                    title: "Trusted by industry giants",
+                                    body: "Titan, Tanishq, Hitachi, Highly — and many more. Once a client hands us the brief, they never have to worry again.",
+                                  },
+                                ].map(({ num, title, body }) => (
+                                  <div key={num} className="flex gap-5 items-start border-t border-white/5 pt-6">
+                                    <span className="font-mono text-[8px] tracking-[0.3em] text-accent/60 uppercase shrink-0 mt-1">
+                                      [{num}]
+                                    </span>
+                                    <div className="flex flex-col gap-1.5">
+                                      <h3 className="font-display text-lg md:text-xl font-light text-[#eae6e1]">
+                                        {title}
+                                      </h3>
+                                      <p className="font-body text-sm text-foreground/50 leading-relaxed">
+                                        {body}
+                                      </p>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {/* Quick stats row */}
+                              <div className="flex gap-8 border-t border-white/5 pt-8">
+                                {[
+                                  { val: "2002", label: "Founded" },
+                                  { val: "3000+", label: "Projects" },
+                                  { val: "24 Yrs", label: "Zero bad reviews" },
+                                ].map(({ val, label }) => (
+                                  <div key={label} className="flex flex-col gap-1">
+                                    <span className="font-display text-2xl md:text-3xl font-light text-accent">{val}</span>
+                                    <span className="font-mono text-[8px] tracking-[0.25em] text-foreground/40 uppercase">{label}</span>
+                                  </div>
+                                ))}
+                              </div>
+
+                              {/* CTA */}
+                              <button
+                                onClick={() => setShowAboutView(true)}
+                                className="self-start inline-flex items-center gap-3 font-mono text-[9px] md:text-[10px] tracking-[0.25em] uppercase text-accent border border-accent/30 hover:border-accent hover:bg-accent/10 px-6 py-3 rounded-[4px] transition-all duration-500 cursor-pointer outline-none bg-transparent"
+                              >
+                                <span>Read More</span>
+                                <span>→</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </section>
+
                       {/* Services Section */}
                       <section
                         id="services-section"
-                        className="relative py-24 md:py-32 px-8 md:px-24 border-t border-accent/5 bg-[#030303]"
+                        className="relative py-24 md:py-32 px-8 md:px-24 border-t border-accent/5 bg-[#030303] overflow-hidden"
                       >
+                        {/* Subtle corner ambient lighting */}
+                        <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
+                        <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
                         {/* Header */}
                         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-6">
                           <div>
@@ -2353,6 +2759,8 @@ export default function ScrollVideoHero() {
                         </div>
                       </section>
 
+                      <PartnersStrip />
+
                       {/* MP Gallery Section */}
                       {details.gallery && details.gallery.length > 0 && (
                         <section
@@ -2426,7 +2834,6 @@ export default function ScrollVideoHero() {
                                   const translateY = dist * 45; // 45vh vertical spacing
                                   const scale = 1.05 - absDist * 0.15;
                                   const rotate = dist * -8; // rotate between -16deg and 16deg
-                                  const blurVal = Math.min(8, absDist * 6);
                                   const opacity =
                                     1 - Math.min(0.65, absDist * 0.45);
                                   const zIndex = Math.round(10 - absDist * 2);
@@ -2438,7 +2845,6 @@ export default function ScrollVideoHero() {
                                       style={{
                                         backgroundImage: `url('${item.image}')`,
                                         transform: `translateY(${translateY}vh) scale(${scale}) rotate(${rotate}deg)`,
-                                        filter: `blur(${blurVal}px)`,
                                         opacity: opacity,
                                         zIndex: zIndex,
                                       }}
@@ -2460,8 +2866,11 @@ export default function ScrollVideoHero() {
                   {activeCard !== null && (
                     <section
                       id="details-contact"
-                      className="relative bg-[#050507] border-t border-white/5 py-24 md:py-32 px-8 md:px-24 overflow-hidden"
+                      className="relative bg-[#0d0d10] border-t border-white/5 py-24 md:py-32 px-8 md:px-24 overflow-hidden"
                     >
+                      {/* Subtle corner ambient lighting */}
+                      <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
+                      <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
                       <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#030303]/40 pointer-events-none" />
 
                       {/* Subtle ambient light */}
@@ -2613,8 +3022,11 @@ export default function ScrollVideoHero() {
                   {activeCard !== null && (
                     <section
                       id="details-cta"
-                      className="relative py-28 md:py-36 px-8 md:px-24 bg-[#0d0d11] overflow-hidden border-t border-b border-white/5"
+                      className="relative py-10 md:py-14 px-8 md:px-24 bg-[#030303] overflow-hidden border-t border-b border-white/5"
                     >
+                      {/* Subtle corner ambient lighting */}
+                      <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
+                      <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
                       {/* Subtle golden backdrop flares */}
                       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(197,168,128,0.03)_0%,transparent_70%)] pointer-events-none" />
 
@@ -2658,8 +3070,11 @@ export default function ScrollVideoHero() {
 
                   <footer
                     id="details-footer"
-                    className="relative bg-[#030303] py-24 md:py-32 px-8 md:px-24 overflow-hidden"
+                    className="relative bg-[#0d0d10] py-24 md:py-32 px-8 md:px-24 overflow-hidden"
                   >
+                    {/* Subtle corner ambient lighting */}
+                    <div className="absolute top-0 left-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
+                    <div className="absolute bottom-0 right-0 w-80 h-80 rounded-full bg-accent/[0.07] blur-[120px] pointer-events-none select-none" />
                     {/* Top Accent Gradient Border */}
                     <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-accent/30 to-transparent" />
 

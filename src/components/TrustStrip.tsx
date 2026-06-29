@@ -91,23 +91,23 @@ export default function TrustStrip() {
   ];
 
   return (
-    <div className="w-[96%] max-w-[1400px] mx-auto my-8 md:my-14 relative z-30">
-      {/* Unified widescreen glassmorphic panel */}
-      <div className="relative w-full bg-[#050507]/45 backdrop-blur-xl border border-accent/15 rounded-xl p-6 md:p-8 flex flex-col md:flex-row items-stretch justify-between gap-6 md:gap-2 shadow-[0_20px_50px_rgba(0,0,0,0.85)] overflow-hidden">
-        {/* Subtle decorative corner viewfinder brackets inside */}
-        <div className="absolute top-3 left-3 w-2 h-2 border-t border-l border-accent/25" />
-        <div className="absolute top-3 right-3 w-2 h-2 border-t border-r border-accent/25" />
-        <div className="absolute bottom-3 left-3 w-2 h-2 border-b border-l border-accent/25" />
-        <div className="absolute bottom-3 right-3 w-2 h-2 border-b border-r border-accent/25" />
+    <div className="w-full bg-[#0d0d10] backdrop-blur-xl border-t border-b border-accent/15 py-8 md:py-10 my-8 md:my-14 relative z-30">
+      {/* Subtle decorative corner viewfinder brackets inside */}
+      <div className="absolute top-3 left-3 w-2.5 h-2.5 border-t border-l border-accent/25" />
+      <div className="absolute top-3 right-3 w-2.5 h-2.5 border-t border-r border-accent/25" />
+      <div className="absolute bottom-3 left-3 w-2.5 h-2.5 border-b border-l border-accent/25" />
+      <div className="absolute bottom-3 right-3 w-2.5 h-2.5 border-b border-r border-accent/25" />
 
-        {/* Ambient background light leaks */}
-        <div className="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-accent/2 blur-2xl pointer-events-none" />
-        <div className="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-accent/2 blur-2xl pointer-events-none" />
+      {/* Ambient background light leaks */}
+      <div className="absolute -top-16 -left-16 w-64 h-64 rounded-full bg-accent/3 blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-16 -right-16 w-64 h-64 rounded-full bg-accent/3 blur-3xl pointer-events-none" />
 
+      {/* Grid container spanning full bleed with custom inner padding */}
+      <div className="w-full px-6 md:px-16 lg:px-20 flex flex-col md:flex-row items-stretch justify-between gap-6 md:gap-2">
         {items.map((item, idx) => (
           <React.Fragment key={idx}>
             {/* Trust item container */}
-            <div className="flex-1 flex items-center gap-5 px-6 md:px-8 py-2 group hover:-translate-y-0.5 transition-all duration-500 select-none">
+            <div className="flex-1 flex items-center justify-center md:justify-start gap-5 px-4 py-2 group hover:-translate-y-0.5 transition-all duration-500 select-none">
               {/* Icon */}
               <div className="flex-shrink-0 w-10 h-10 flex items-center justify-center text-accent group-hover:scale-110 transition-transform duration-500 relative">
                 {/* Glow behind icon on hover */}
@@ -116,11 +116,11 @@ export default function TrustStrip() {
               </div>
 
               {/* Value and label */}
-              <div className="flex flex-col gap-1 text-left">
-                <span className="font-display text-2xl md:text-3xl font-light italic tracking-wide text-foreground group-hover:text-accent transition-colors duration-500 leading-none">
+              <div className="flex flex-col gap-1.5 text-left">
+                <span className="font-display text-3xl md:text-4xl font-light italic tracking-wide text-foreground group-hover:text-accent transition-colors duration-500 leading-none">
                   {item.value}
                 </span>
-                <span className="font-mono text-[8px] md:text-[9px] tracking-[0.25em] text-foreground/45 group-hover:text-foreground/75 transition-colors duration-500 uppercase">
+                <span className="font-mono text-[10px] md:text-xs tracking-[0.25em] text-foreground/45 group-hover:text-foreground/75 transition-colors duration-500 uppercase">
                   {item.label}
                 </span>
               </div>
