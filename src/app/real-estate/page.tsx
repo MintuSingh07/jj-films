@@ -1,9 +1,11 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import WhatsAppButton from "@/components/WhatsAppButton";
+import TrustStrip from "@/components/TrustStrip";
 
 
 const SERVICES_LIST = [
@@ -54,6 +56,7 @@ const SERVICES_LIST = [
 ];
 
 export default function RealEstatePage() {
+  const [showAll, setShowAll] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const subtitleRef = useRef<HTMLSpanElement>(null);
@@ -196,6 +199,8 @@ export default function RealEstatePage() {
         </div>
       </section>
 
+      <TrustStrip />
+
       {/* Services Section */}
       <section
         ref={servicesSecRef}
@@ -211,48 +216,66 @@ export default function RealEstatePage() {
               Real Estate Services
             </h2>
           </div>
-          <p className="font-body text-xs md:text-sm text-[#7c7c82] max-w-md leading-relaxed">
-            From high-end luxury villa features to interactive virtual spaces, explore our specialized suites designed to scale developer property assets.
-          </p>
+          <div className="flex flex-col items-start md:items-end gap-6">
+            <p className="font-body text-sm md:text-base text-foreground/80 max-w-md leading-relaxed md:text-right">
+              From high-end luxury villa features to interactive virtual spaces, explore our specialized suites designed to scale developer property assets.
+            </p>
+            {!showAll && (
+              <button
+                onClick={() => setShowAll(true)}
+                className="group inline-flex items-center gap-2.5 font-mono text-xs md:text-sm tracking-[0.2em] uppercase text-accent border border-accent/30 hover:border-accent bg-transparent px-7 py-3 rounded-[4px] transition-all duration-500 hover:bg-accent/10 cursor-pointer outline-none font-semibold shadow-sm"
+              >
+                <span>View more</span>
+                <span className="inline-block transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-0.5">
+                  →
+                </span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Services Grid */}
         <div
           ref={gridRef}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6"
         >
-          {SERVICES_LIST.map((service, index) => {
+          {(showAll ? SERVICES_LIST : SERVICES_LIST.slice(0, 8)).map((service, index) => {
             const num = String(index + 1).padStart(2, "0");
             return (
               <div
                 key={index}
-                className="group relative bg-[#0a0a0c]/40 border border-accent/10 p-8 md:p-10 rounded-[4px] overflow-hidden flex flex-col justify-between min-h-[220px] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#121215]/70 hover:border-accent/40 hover:-translate-y-1.5 hover:shadow-[0_10px_30px_-15px_rgba(197,168,128,0.15)]"
+                className="group relative flex flex-col bg-[#0a0a0c]/60 border border-accent/15 rounded-[4px] overflow-hidden transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-[#121215]/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(197,168,128,0.15)]"
               >
-                {/* Micro focus corner brackets for camera viewfinder aesthetic */}
-                <div className="absolute top-4 left-4 w-1.5 h-1.5 border-t border-l border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
-                <div className="absolute top-4 right-4 w-1.5 h-1.5 border-t border-r border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
-                <div className="absolute bottom-4 left-4 w-1.5 h-1.5 border-b border-l border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
-                <div className="absolute bottom-4 right-4 w-1.5 h-1.5 border-b border-r border-accent/0 group-hover:border-accent/30 transition-colors duration-500" />
+                {/* Image Placeholder Area */}
+                <div className="relative aspect-[4/3] w-full bg-[#070709] overflow-hidden flex items-center justify-center">
+                  {/* Placeholder reticle/crosshair */}
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none">
+                    <div className="relative w-10 h-10 flex items-center justify-center opacity-20 group-hover:opacity-45 transition-opacity duration-500">
+                      <div className="absolute inset-0 border border-dashed border-accent rounded-full group-hover:rotate-45 transition-transform duration-1000" />
+                      <div className="w-1 h-1 rounded-full bg-accent" />
+                    </div>
+                  </div>
 
-                {/* Service Header Info */}
-                <div className="flex justify-between items-start gap-4">
-                  <span className="font-mono text-[9px] md:text-[10px] tracking-[0.25em] text-accent/80 group-hover:text-accent transition-colors duration-500 font-semibold">
-                    [{num}]
-                  </span>
-                  {/* Large background watermark number */}
-                  <span className="font-display font-extrabold text-7xl text-foreground/5 group-hover:text-accent/5 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] select-none absolute right-6 top-4 group-hover:-translate-y-1">
-                    {num}
-                  </span>
+                  {/* Technical camera data label */}
+                  <div className="absolute top-3 left-4 font-mono text-[7px] text-[#7c7c82]/60 uppercase tracking-widest pointer-events-none select-none">
+                    FRAME // {num}
+                  </div>
+                  <div className="absolute bottom-3 right-4 font-mono text-[7px] text-accent/50 uppercase tracking-widest pointer-events-none select-none group-hover:text-accent transition-colors duration-500">
+                    [ PENDING IMAGE ]
+                  </div>
+
+                  {/* Viewfinder focus brackets */}
+                  <div className="absolute top-3 left-3 w-1.5 h-1.5 border-t border-l border-accent/20 group-hover:border-accent/60 transition-colors duration-500" />
+                  <div className="absolute top-3 right-3 w-1.5 h-1.5 border-t border-r border-accent/20 group-hover:border-accent/60 transition-colors duration-500" />
+                  <div className="absolute bottom-3 left-3 w-1.5 h-1.5 border-b border-l border-accent/20 group-hover:border-accent/60 transition-colors duration-500" />
+                  <div className="absolute bottom-3 right-3 w-1.5 h-1.5 border-b border-r border-accent/20 group-hover:border-accent/60 transition-colors duration-500" />
                 </div>
 
-                {/* Service Body content */}
-                <div className="mt-8 relative z-10">
-                  <h3 className="font-display text-2xl md:text-3xl font-light text-[#eae6e1] group-hover:text-foreground transition-colors duration-500">
+                {/* Card Info Section */}
+                <div className="p-5 border-t border-accent/5 bg-black/20">
+                  <h3 className="font-display text-base md:text-lg font-light text-[#eae6e1] group-hover:text-foreground transition-colors duration-500 tracking-wide truncate">
                     {service.title}
                   </h3>
-                  <p className="font-body text-xs md:text-sm text-foreground/60 mt-4 leading-relaxed group-hover:text-foreground/75 transition-colors duration-500">
-                    {service.description}
-                  </p>
                 </div>
               </div>
             );
@@ -279,14 +302,15 @@ export default function RealEstatePage() {
 
         {/* Text Label */}
         <div className="text-center z-10 p-8 select-none">
-          <span className="font-mono text-[9px] md:text-[10px] tracking-[0.45em] text-accent/35 uppercase">
+          <span className="font-mono text-[10px] md:text-xs tracking-[0.35em] text-accent/70 uppercase">
             [ SECTION II — FUTURE EXPANSION ]
           </span>
-          <p className="font-body text-[10px] text-foreground/30 mt-4 max-w-xs mx-auto leading-relaxed uppercase tracking-[0.2em]">
+          <p className="font-body text-xs text-foreground/60 mt-4 max-w-xs mx-auto leading-relaxed uppercase tracking-[0.2em]">
             Asset galleries, builder showcases, and interactive 3D elements coming soon.
           </p>
         </div>
       </section>
+      <WhatsAppButton />
     </main>
   );
 }
